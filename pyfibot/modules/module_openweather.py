@@ -5,15 +5,16 @@ from datetime import datetime, timedelta
 from util import getnick
 
 log = logging.getLogger('openweather')
-url = 'http://api.wunderground.com/api/7773d26ca4446975/conditions/forecast/q/%s.json'
-default_location = 'YZF'
+url = 'http://api.wunderground.com/api/%s/conditions/forecast/q/%s.json'
 defaults = {}
 
 def init(bot):
     global defaults
+    global api_key
     
     config = bot.config.get('module_openweather', {})
     default_location = config.get('default_location', 'YZF')
+    api_key = config.get('wunderground_key')
     log.info('Using %s as default location' % default_location)
     with open('/usr/pyfibot/pyfibot/modules/module_openweather_conf.json') as configfile:
         defaults = json.load(configfile)
@@ -93,9 +94,10 @@ def command_forecast(bot, user, channel, args):
     bot.say(channel, "For %s: %s" % (next, nextfc))
     
 def get_weather(bot, user, channel, args, output):
+    global api_key
+    
     location = args
-        
-    q = bot.get_url(url % location)
+    q = bot.get_url(url % (api_key, location))
     parsed = q.json()
     degree_sign= u'\N{DEGREE SIGN}'
     

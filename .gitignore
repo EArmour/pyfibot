@@ -4,6 +4,8 @@ include/
 module_autoop.db
 pyfibot/bot.config
 rss.db
+pyfibot/modules/module_openweather_conf.json
+.settings/
 
 #imdbpy
 etc
