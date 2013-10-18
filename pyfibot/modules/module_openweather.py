@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 from util import getnick
 
 log = logging.getLogger('openweather')
-url = 'http://api.wunderground.com/api/%s/conditions/forecast/q/%s.json'
 defaults = {}
+url = 'http://api.wunderground.com/api/%s/conditions/forecast/q/%s.json'
 
 def init(bot):
     global defaults
