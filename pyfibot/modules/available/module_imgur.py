@@ -1,6 +1,8 @@
 """Upload images encountered on channels to imgur.com"""
 
 import urllib
+
+
 try:
     import json
     import oauth2 as oauth

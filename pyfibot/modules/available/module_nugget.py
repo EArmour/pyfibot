@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from urllib import FancyURLopener
-from BeautifulSoup import BeautifulSoup
-import re
 import random
+import re
+from urllib import FancyURLopener
+
+from BeautifulSoup import BeautifulSoup
 
 
 class MyOpener(FancyURLopener):

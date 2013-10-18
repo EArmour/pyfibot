@@ -1,8 +1,16 @@
 
 """A basic library for getting data out of epguides.com"""
 
-import re, urllib, string, time, datetime
-import ConfigParser, os.path, sys, md5
+import ConfigParser
+import datetime
+import md5
+import os.path
+import re
+import string
+import sys
+import time
+import urllib
+
 
 class Serie:
     """One serie"""

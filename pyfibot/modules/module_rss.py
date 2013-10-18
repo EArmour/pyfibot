@@ -9,36 +9,43 @@ Riku 'Shrike' Lindblad
 @copyright Copyright (c) 2010-2013 pyfibot developers
 @licence BSD
 
-Possible output syntax:
-    0 == feed_title: title - url
-    1 == feed_title: title - shorturl
-    2 == feed_title: title (id)
-    3 == feed_title: title
-    4 == title
-
 Config format:
-    database: rss.db
-    delays:
-      rss_sync: 300  # How often we synchronize rss-feeds in seconds
-      output: 7  # Delay in output to channels in seconds
-    output_syntax: 0
-    bitly_api_key:  # Only needed if using shorturl format
+database: rss.db
+delays:
+  rss_sync: 300 #How often we synchronize rss-feeds (in seconds)
+  output: 7 #How often to output new elements to channels
+output_syntax: 0 #0 == feed_title: title - url, 1 == feed_title: title - shorturl, 2 == feed_title: title (id), 3 == feed_title: title, 4 == title
+bitly_login: #Needed if using shorturl format
+bitly_api_key: #Needed if using shorturl format
 
 With output_syntax #2 you could get url via .url <id>
 
 """
 
 from __future__ import unicode_literals, print_function, division
-from threading import Thread
+
 import hashlib
 import logging
 import logging.handlers
 import os
 import re
-import requests
 import sqlite3
 import sys
+from threading import Thread
 import traceback
+import urllib
+import urllib2
+
+
+# import py2.6 json if available, fall back to simplejson
+try:
+    import json
+except:
+    try:
+        import simplejson as json
+    except ImportError, error:
+        print('Error starting rss module: %s' % error)
+        init_ok = False
 
 try:
     import feedparser
@@ -231,18 +238,13 @@ def command_rss(bot, user, channel, args):
 
 def shorturl(url):
     try:
-        payload = {
-            'access_token': rssconfig["bitly_api_key"],
-            'longUrl': url
-        }
-        r = requests.get("https://api-ssl.bitly.com/v3/shorten", params=payload)
-        if r.status_code == int('500'):
-            log.error('Error in bitly functionality. Check if login or API key is missing from configuration.')
-            return
-        if r.status_code == int('200'):
-            return r.json['data']['url']
-    except Exception:
-        log.error(traceback.format_exc())
+        req = urllib2.Request("http://api.bit.ly/v3/shorten?%s" % urllib.urlencode({'longUrl': url, 'login': rssconfig["bitly_login"], 'apiKey': rssconfig["bitly_api_key"], 'format': 'json'}))
+        results = json.loads(urllib2.urlopen(req).read())
+        if (results['status_code'] == 200):
+            return results['data']['url'].encode("UTF-8")
+        raise Exception("Error in function shorturl: %s" % results['status_txt'])
+    except HTTPError, e:
+        log.error('Error in function shorturl (url => %s): %s' % (url, e.read()))
 
 
 def unescape(text):

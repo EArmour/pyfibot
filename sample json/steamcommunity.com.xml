@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><profile>
+	<steamID64>76561197995600204</steamID64>
+	<steamID><![CDATA[[MeFi] Hargrimm]]></steamID>
+	<onlineState>online</onlineState>
+	<stateMessage><![CDATA[Online]]></stateMessage>
+	<privacyState>public</privacyState>
+	<visibilityState>3</visibilityState>
+	<avatarIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/4a/4a7683ff771cde1330eec699c3375c91d67b3fc1.jpg]]></avatarIcon>
+	<avatarMedium><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/4a/4a7683ff771cde1330eec699c3375c91d67b3fc1_medium.jpg]]></avatarMedium>
+	<avatarFull><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/4a/4a7683ff771cde1330eec699c3375c91d67b3fc1_full.jpg]]></avatarFull>
+	<vacBanned>0</vacBanned>
+	<tradeBanState>None</tradeBanState>
+	<isLimitedAccount>0</isLimitedAccount>
+	<customURL><![CDATA[hargrimm]]></customURL>
+	<memberSince>January 5th, 2008</memberSince>
+	<steamRating>3.8</steamRating>
+	<hoursPlayed2Wk>12.3</hoursPlayed2Wk>
+	<headline><![CDATA[]]></headline>
+	<location><![CDATA[Roanoke, Virginia, United States]]></location>
+	<realname><![CDATA[Evan]]></realname>
+	<summary><![CDATA[No information given.]]></summary>
+ 	<mostPlayedGames>
+		<mostPlayedGame>
+			<gameName><![CDATA[Warhammer 40,000: Dawn of War – Soulstorm]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/9450]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/9450/d13abadb0f456659a634d2cd8286665a0c76a2c6.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/9450/3b300beec0113261da00267121eccd8702059a88.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/9450/c71fa7e840d2ea36dd4a6438dc5eea29be42f713.jpg]]></gameLogoSmall>
+			<hoursPlayed>4.6</hoursPlayed>
+			<hoursOnRecord>7.0</hoursOnRecord>
+			<statsName><![CDATA[9450]]></statsName>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[Counter-Strike: Global Offensive]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/730]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/730/69f7ebe2735c366c65c0b33dae00e12dc40edbe4.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/730/d0595ff02f5c79fd19b06f4d6165c3fda2372820_thumb.jpg]]></gameLogoSmall>
+			<hoursPlayed>2.9</hoursPlayed>
+			<hoursOnRecord>11.4</hoursOnRecord>
+			<statsName><![CDATA[CSGO]]></statsName>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[Left 4 Dead 2]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/550]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/550/7d5a243f9500d2f8467312822f8af2a2928777ed.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/550/205863cc21e751a576d6fff851984b3170684142.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/550/205863cc21e751a576d6fff851984b3170684142_thumb.jpg]]></gameLogoSmall>
+			<hoursPlayed>2.0</hoursPlayed>
+			<hoursOnRecord>244</hoursOnRecord>
+			<statsName><![CDATA[L4D2]]></statsName>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[Killing Floor]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/1250]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/1250/d8a2d777cb4c59cf06aa244166db232336520547.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/1250/354c07a75cc16f6bf551b81d27f4eee3436fc2fb.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/1250/354c07a75cc16f6bf551b81d27f4eee3436fc2fb_thumb.jpg]]></gameLogoSmall>
+			<hoursPlayed>1.3</hoursPlayed>
+			<hoursOnRecord>1.3</hoursOnRecord>
+			<statsName><![CDATA[KillingFloor]]></statsName>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[Warhammer 40,000: Dawn of War – Dark Crusade]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/4580]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/4580/584fcb6284ffd2fcf378fb3c199a9275a0a01b2d.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/4580/ed04f5f4ca5bd374fa09da62f583a7dbbf1d8558.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/4580/3dc853139dcc9e44aca27f2ba50458abfd858f0b.jpg]]></gameLogoSmall>
+			<hoursPlayed>0.8</hoursPlayed>
+			<hoursOnRecord>0.8</hoursOnRecord>
+			<statsName><![CDATA[4580]]></statsName>
+		</mostPlayedGame>
+		<mostPlayedGame>
+			<gameName><![CDATA[Need for Speed: Hot Pursuit]]></gameName>
+			<gameLink><![CDATA[http://steamcommunity.com/app/47870]]></gameLink>
+			<gameIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/47870/4066e98d482110d2ee745d3a415d80d36336eb33.jpg]]></gameIcon>
+			<gameLogo><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/47870/aab501216db276600a1fd2cc1042b5b1039e6eee.jpg]]></gameLogo>
+			<gameLogoSmall><![CDATA[http://media.steampowered.com/steamcommunity/public/images/apps/47870/aab501216db276600a1fd2cc1042b5b1039e6eee_thumb.jpg]]></gameLogoSmall>
+			<hoursPlayed>0.6</hoursPlayed>
+			<hoursOnRecord>6.4</hoursOnRecord>
+		</mostPlayedGame>
+	</mostPlayedGames>
+
+
+	<weblinks>
+	</weblinks>
+
+	<groups>
+		<group isPrimary="1">
+			<groupID64>103582791429603105</groupID64>
+			<groupName><![CDATA[MetaFilter]]></groupName>
+			<groupURL><![CDATA[MetaFilter]]></groupURL>
+			<headline><![CDATA[Fighting Over a Plate of Beans]]></headline>
+			<summary><![CDATA[The fun-lovin', game-playin', rotato-havin' arm of the MetaFilter community. Join us at Mefightclub.com to get in on the fun!]]></summary>
+			<avatarIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/bc/bcc76e0736469d12e1b22e5c4aa7e3ac0adf838c.jpg]]></avatarIcon>
+			<avatarMedium><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/bc/bcc76e0736469d12e1b22e5c4aa7e3ac0adf838c_medium.jpg]]></avatarMedium>
+			<avatarFull><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/bc/bcc76e0736469d12e1b22e5c4aa7e3ac0adf838c_full.jpg]]></avatarFull>
+			<memberCount>823</memberCount>
+			<membersInChat>0</membersInChat>
+			<membersInGame>50</membersInGame>
+			<membersOnline>242</membersOnline>
+		</group>
+		<group isPrimary="0">
+			<groupID64>103582791429830217</groupID64>
+			<groupName><![CDATA[The Medic Group]]></groupName>
+			<groupURL><![CDATA[medicgroup]]></groupURL>
+			<headline><![CDATA[]]></headline>
+			<summary><![CDATA[<br><br><br><br><br><br><br><br><br><br><br><br><br>]]></summary>
+			<avatarIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/5c/5cb4c06e859f676595a89041236e83b061515eaf.jpg]]></avatarIcon>
+			<avatarMedium><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/5c/5cb4c06e859f676595a89041236e83b061515eaf_medium.jpg]]></avatarMedium>
+			<avatarFull><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/5c/5cb4c06e859f676595a89041236e83b061515eaf_full.jpg]]></avatarFull>
+			<memberCount>690</memberCount>
+			<membersInChat>0</membersInChat>
+			<membersInGame>24</membersInGame>
+			<membersOnline>130</membersOnline>
+		</group>
+		<group isPrimary="0">
+			<groupID64>103582791430731414</groupID64>
+			<groupName><![CDATA[Rotato Zombies]]></groupName>
+			<groupURL><![CDATA[rotatozombies]]></groupURL>
+			<headline><![CDATA[]]></headline>
+			<summary><![CDATA[No information given.]]></summary>
+			<avatarIcon><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/c7/c7939f401227ef88475ddecbd8a88f745dcc0735.jpg]]></avatarIcon>
+			<avatarMedium><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/c7/c7939f401227ef88475ddecbd8a88f745dcc0735_medium.jpg]]></avatarMedium>
+			<avatarFull><![CDATA[http://media.steampowered.com/steamcommunity/public/images/avatars/c7/c7939f401227ef88475ddecbd8a88f745dcc0735_full.jpg]]></avatarFull>
+			<memberCount>126</memberCount>
+			<membersInChat>0</membersInChat>
+			<membersInGame>12</membersInGame>
+			<membersOnline>56</membersOnline>
+		</group>
+				<group isPrimary="0">
+					<groupID64>103582791430808365</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430884334</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430956170</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430958162</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791430996025</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431035094</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431427211</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431665155</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431726901</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791431987210</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432039577</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432043729</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432188903</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432206191</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432275773</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432321256</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432400346</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791432495064</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791433470361</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791434193426</groupID64>
+				</group>
+							<group isPrimary="0">
+					<groupID64>103582791434277245</groupID64>
+				</group>
+				</groups>
+</profile>

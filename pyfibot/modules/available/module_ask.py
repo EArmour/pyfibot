@@ -8,15 +8,16 @@
 
 """
 
-import urllib
-import re
 import htmlentitydefs
-import sys
-import os
 import logging
-import yaml
+import os
+import re
+import sys
+import urllib
 
 from BeautifulSoup import BeautifulStoneSoup, Comment
+import yaml
+
 
 # Initialize logger
 log = logging.getLogger('ask')

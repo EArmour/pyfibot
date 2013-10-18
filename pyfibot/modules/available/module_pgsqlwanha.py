@@ -1,5 +1,7 @@
-import time
 import datetime
+import time
+
+
 try:
     from pyPgSQL import PgSQL
 except:

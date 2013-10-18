@@ -21,10 +21,12 @@ config-format:
 """
 
 import fnmatch
-import yaml
 import os.path
-import sys
 import re
+import sys
+
+import yaml
+
 
 oplistfile = os.path.join(sys.path[0], 'modules', 'module_autoop.conf')
 oplist = dict()

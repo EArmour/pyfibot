@@ -1,7 +1,7 @@
 import logging
 
-# From http://stackoverflow.com/questions/384076/how-can-i-color-python-logging-output
 
+# From http://stackoverflow.com/questions/384076/how-can-i-color-python-logging-output
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 
 #The background is set with 40 plus the number of the color, and the foreground with 30

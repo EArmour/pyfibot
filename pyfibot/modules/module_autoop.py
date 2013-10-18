@@ -9,8 +9,9 @@ Commands:
 """
 
 from __future__ import unicode_literals, print_function, division
-import sqlite3
+
 import re
+import sqlite3
 
 
 COMMANDS = ['add', 'remove', 'list', 'status']

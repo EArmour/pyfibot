@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 import os
-from paver.easy import *
-import paver.virtual
-import paver.setuputils
+
 from paver import svn
+from paver.easy import *
 from paver.setuputils import setup, find_package_data, find_packages
+import paver.setuputils
+import paver.virtual
 
 
 with file("requirements.txt") as f:

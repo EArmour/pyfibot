@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import re
-from operator import pow, add, sub, mul, div, mod
-
-import urllib2
-import requests
 import json
+from operator import pow, add, sub, mul, div, mod
+import re
+import urllib2
+
+import requests
 
 
 def doTheMath(matchobj):

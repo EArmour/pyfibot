@@ -1,0 +1,417 @@
+{
+	"ReturnPolicyInfo": {
+		"Name": "Standard Return Policy",
+		"ID": "44",
+		"HtmlContent": "",
+		"IsSeller": false
+	},
+	"MailInRebateInfo": null,
+	"imageGallery": [{
+		"ItemNumber": null,
+		"Title": null,
+		"FullPath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S640W$",
+		"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S60$",
+		"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S100$",
+		"PathSize35": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S35$",
+		"PathSize60": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S60$",
+		"PathSize100": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S100$",
+		"PathSize125": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S125W$",
+		"PathSize180": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S180W$",
+		"PathSize300": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S300W$",
+		"PathSize640": "http://images17.newegg.com/is/image/newegg/23-129-022-Z01?$S640W$"
+	},
+	{
+		"ItemNumber": null,
+		"Title": null,
+		"FullPath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S640W$",
+		"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S60$",
+		"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S100$",
+		"PathSize35": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S35$",
+		"PathSize60": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S60$",
+		"PathSize100": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S100$",
+		"PathSize125": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S125W$",
+		"PathSize180": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S180W$",
+		"PathSize300": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S300W$",
+		"PathSize640": "http://images17.newegg.com/is/image/newegg/23-129-022-Z02?$S640W$"
+	},
+	{
+		"ItemNumber": null,
+		"Title": null,
+		"FullPath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S640W$",
+		"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S60$",
+		"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S100$",
+		"PathSize35": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S35$",
+		"PathSize60": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S60$",
+		"PathSize100": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S100$",
+		"PathSize125": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S125W$",
+		"PathSize180": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S180W$",
+		"PathSize300": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S300W$",
+		"PathSize640": "http://images17.newegg.com/is/image/newegg/23-129-022-Z03?$S640W$"
+	},
+	{
+		"ItemNumber": null,
+		"Title": null,
+		"FullPath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S640W$",
+		"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S60$",
+		"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S100$",
+		"PathSize35": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S35$",
+		"PathSize60": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S60$",
+		"PathSize100": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S100$",
+		"PathSize125": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S125W$",
+		"PathSize180": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S180W$",
+		"PathSize300": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S300W$",
+		"PathSize640": "http://images17.newegg.com/is/image/newegg/23-129-022-Z04?$S640W$"
+	}],
+	"ShippingInfo": {
+		"NormalShippingText": "Free Shipping*",
+		"SpecialShippingText": " Additional fees may apply for shipments to APO/FPO, AK, HI and PR.",
+		"RestrictedShippingTitle": "Shipping Restrictions",
+		"RestrictedShippingText": " Additional fees may apply for shipments to APO/FPO, AK, HI and PR."
+	},
+	"IsShowSoldOutText": false,
+	"AddToCartButtonText": "Add To Cart",
+	"AddToCartButtonType": "AD",
+	"CoremetricsInfo": {
+		"CategoryID": "IPS63",
+		"ProductName": "KB COOLER MASTER QUICKFIRE XT RT_23-129-022",
+		"PageID": "PRODUCT: KB COOLER MASTER QUICKFIRE XT RT_23-129-022 (23-129-022)",
+		"Brand": "Cooler Master"
+	},
+	"EmailFriendImageInfo": {
+		"ItemNumber": null,
+		"Title": null,
+		"FullPath": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S35$",
+		"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S60$",
+		"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S125W$",
+		"PathSize35": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S35$",
+		"PathSize60": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S60$",
+		"PathSize100": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S100$",
+		"PathSize125": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S125W$",
+		"PathSize180": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S180W$",
+		"PathSize300": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S300W$",
+		"PathSize640": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S640W$"
+	},
+	"ShippingPromotionInfo": null,
+	"IsActivated": true,
+	"SellerItemPropertyList": [{
+		"ParentItem": "23-129-022",
+		"PropertyId": 844,
+		"PropertyDescription": "Design Style",
+		"PropertyValue": {
+			"ValueId": 7076,
+			"ValueDescription": "Slim"
+		}
+	},
+	{
+		"ParentItem": "23-129-022",
+		"PropertyId": 36681,
+		"PropertyDescription": "Key Switch Type",
+		"PropertyValue": {
+			"ValueId": 442777,
+			"ValueDescription": "Brown Cherry MX"
+		}
+	},
+	{
+		"ParentItem": "23-129-022",
+		"PropertyId": 848,
+		"PropertyDescription": "Keyboard Color",
+		"PropertyValue": {
+			"ValueId": 8064,
+			"ValueDescription": "Black"
+		}
+	}],
+	"IsShowEnergyStarSection": false,
+	"EnergyStarText": null,
+	"IronEggDescription": null,
+	"IronEggImageLink": null,
+	"ComboCount": 0,
+	"SubCategoryId": 63,
+	"SubCategoryName": "Keyboards",
+	"Warnings": null,
+	"IsShipByNewegg": true,
+	"ShoppingInsight": {
+		"Description": "See what other informed Newegg customers purchased after viewing this product",
+		"PromotionItems": [{
+			"Percentage": "14",
+			"IsCurrentItem": false,
+			"ItemNumber": "23-109-191",
+			"Title": "Microsoft  SIDEWINDER X4  Keyboard ",
+			"OriginalPrice": "$59.99",
+			"IsShowOriginalPrice": true,
+			"FinalPrice": "$49.99",
+			"ItemImage": {
+				"ItemNumber": null,
+				"Title": null,
+				"FullPath": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S180W$",
+				"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S60$",
+				"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S125W$",
+				"PathSize35": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S35$",
+				"PathSize60": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S60$",
+				"PathSize100": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S100$",
+				"PathSize125": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S125W$",
+				"PathSize180": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S180W$",
+				"PathSize300": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S300W$",
+				"PathSize640": "http://images17.newegg.com/is/image/newegg/23-109-191-Z01?$S640W$"
+			},
+			"ItemBrand": null,
+			"Instock": true,
+			"AfterRebate": null,
+			"IsFreeShipping": true,
+			"ReviewSummary": {
+				"Rating": 0,
+				"TotalReviews": "[]"
+			},
+			"MappingFinalPrice": null,
+			"ItemMapPriceMarkType": 0,
+			"IsMicrosoftDownloadItem": false,
+			"IsProductKeyOnly": false
+		},
+		{
+			"Percentage": "14",
+			"IsCurrentItem": false,
+			"ItemNumber": "23-201-042",
+			"Title": "Rosewill Mechanical Keyboard RK-9000BR with Cherry MX Brown Switch",
+			"OriginalPrice": "$119.99",
+			"IsShowOriginalPrice": true,
+			"FinalPrice": "$84.99",
+			"ItemImage": {
+				"ItemNumber": null,
+				"Title": null,
+				"FullPath": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S180W$",
+				"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S60$",
+				"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S125W$",
+				"PathSize35": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S35$",
+				"PathSize60": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S60$",
+				"PathSize100": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S100$",
+				"PathSize125": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S125W$",
+				"PathSize180": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S180W$",
+				"PathSize300": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S300W$",
+				"PathSize640": "http://images17.newegg.com/is/image/newegg/23-201-042-Z05?$S640W$"
+			},
+			"ItemBrand": null,
+			"Instock": true,
+			"AfterRebate": null,
+			"IsFreeShipping": false,
+			"ReviewSummary": {
+				"Rating": 0,
+				"TotalReviews": "[]"
+			},
+			"MappingFinalPrice": null,
+			"ItemMapPriceMarkType": 0,
+			"IsMicrosoftDownloadItem": false,
+			"IsProductKeyOnly": false
+		},
+		{
+			"Percentage": "7",
+			"IsCurrentItem": false,
+			"ItemNumber": "23-129-005",
+			"Title": "CM Storm QuickFire Rapid - Compact Mechanical Gaming Keyboard with CHERRY MX Brown Switches",
+			"OriginalPrice": "$79.99",
+			"IsShowOriginalPrice": false,
+			"FinalPrice": "$79.99",
+			"ItemImage": {
+				"ItemNumber": null,
+				"Title": null,
+				"FullPath": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S180W$",
+				"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S60$",
+				"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S125W$",
+				"PathSize35": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S35$",
+				"PathSize60": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S60$",
+				"PathSize100": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S100$",
+				"PathSize125": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S125W$",
+				"PathSize180": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S180W$",
+				"PathSize300": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S300W$",
+				"PathSize640": "http://images17.newegg.com/is/image/newegg/23-129-005-V01?$S640W$"
+			},
+			"ItemBrand": null,
+			"Instock": true,
+			"AfterRebate": null,
+			"IsFreeShipping": true,
+			"ReviewSummary": {
+				"Rating": 0,
+				"TotalReviews": "[]"
+			},
+			"MappingFinalPrice": null,
+			"ItemMapPriceMarkType": 0,
+			"IsMicrosoftDownloadItem": false,
+			"IsProductKeyOnly": false
+		},
+		{
+			"Percentage": "6",
+			"IsCurrentItem": false,
+			"ItemNumber": "23-129-007",
+			"Title": "CM Storm QuickFire Rapid - Compact Mechanical Gaming Keyboard with CHERRY MX Black Switches",
+			"OriginalPrice": "$89.99",
+			"IsShowOriginalPrice": true,
+			"FinalPrice": "$69.99",
+			"ItemImage": {
+				"ItemNumber": null,
+				"Title": null,
+				"FullPath": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S180W$",
+				"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S60$",
+				"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S125W$",
+				"PathSize35": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S35$",
+				"PathSize60": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S60$",
+				"PathSize100": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S100$",
+				"PathSize125": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S125W$",
+				"PathSize180": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S180W$",
+				"PathSize300": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S300W$",
+				"PathSize640": "http://images17.newegg.com/is/image/newegg/23-129-007-Z01?$S640W$"
+			},
+			"ItemBrand": null,
+			"Instock": true,
+			"AfterRebate": null,
+			"IsFreeShipping": true,
+			"ReviewSummary": {
+				"Rating": 0,
+				"TotalReviews": "[]"
+			},
+			"MappingFinalPrice": null,
+			"ItemMapPriceMarkType": 0,
+			"IsMicrosoftDownloadItem": false,
+			"IsProductKeyOnly": false
+		}]
+	},
+	"ProductProperties": {
+		"PropertyOptionGroups": [{
+			"Description": "Design Style",
+			"Properties": [{
+				"Description": "Slim",
+				"DisplayInfo": "Slim",
+				"Code": "844|7076",
+				"IsSelected": true,
+				"OptionType": 0
+			}]
+		},
+		{
+			"Description": "Key Switch Type",
+			"Properties": [{
+				"Description": "Blue Cherry MX",
+				"DisplayInfo": "Blue Cherry MX",
+				"Code": "36681|442776",
+				"IsSelected": false,
+				"OptionType": 0
+			},
+			{
+				"Description": "Brown Cherry MX",
+				"DisplayInfo": "Brown Cherry MX",
+				"Code": "36681|442777",
+				"IsSelected": true,
+				"OptionType": 0
+			},
+			{
+				"Description": "Green Cherry MX",
+				"DisplayInfo": "Green Cherry MX",
+				"Code": "36681|442778",
+				"IsSelected": false,
+				"OptionType": 0
+			},
+			{
+				"Description": "Red Cherry MX",
+				"DisplayInfo": "Red Cherry MX",
+				"Code": "36681|442779",
+				"IsSelected": false,
+				"OptionType": 0
+			}]
+		},
+		{
+			"Description": "Keyboard Color",
+			"Properties": [{
+				"Description": "Black",
+				"DisplayInfo": "Black",
+				"Code": "848|8064",
+				"IsSelected": true,
+				"OptionType": 0
+			}]
+		}],
+		"MapPropertyOptionGroups": [{
+			"RecommendItemNumber": "23-129-020",
+			"ParentItemNumber": "23-129-020",
+			"Properties": "844|7076;36681|442779;848|8064"
+		},
+		{
+			"RecommendItemNumber": "23-129-021",
+			"ParentItemNumber": "23-129-021",
+			"Properties": "844|7076;36681|442776;848|8064"
+		},
+		{
+			"RecommendItemNumber": "23-129-022",
+			"ParentItemNumber": "23-129-022",
+			"Properties": "844|7076;36681|442777;848|8064"
+		},
+		{
+			"RecommendItemNumber": "23-129-023",
+			"ParentItemNumber": "23-129-023",
+			"Properties": "844|7076;36681|442778;848|8064"
+		}],
+		"SellerItemList": null,
+		"AllSellerWarning": null
+	},
+	"EduHelpInfo": null,
+	"IsCellPhoneItem": false,
+	"ShowOriginalPrice": true,
+	"MailInRebateText": null,
+	"IsComboBundle": false,
+	"ProductStockType": 0,
+	"MappingFinalPrice": null,
+	"IsFeaturedItem": false,
+	"IsMicrosoftDownloadItem": false,
+	"IsProductKeyOnly": false,
+	"Title": "CM Storm QuickFire XT - Full Size Mechanical Gaming Keyboard with CHERRY MX Brown Switches",
+	"OriginalPrice": "$94.99",
+	"Discount": "You Save: $20.00",
+	"FinalPrice": "$74.99",
+	"FreeShippingFlag": true,
+	"Model": "SGK-4030-GKCM1-US",
+	"ReviewSummary": {
+		"Rating": 5,
+		"TotalReviews": "[3]"
+	},
+	"Image": {
+		"ItemNumber": null,
+		"Title": null,
+		"FullPath": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S180W$",
+		"ThumbnailImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S60$",
+		"SmallImagePath": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S100$",
+		"PathSize35": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S35$",
+		"PathSize60": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S60$",
+		"PathSize100": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S100$",
+		"PathSize125": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S125W$",
+		"PathSize180": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S180W$",
+		"PathSize300": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S300W$",
+		"PathSize640": "http://images17.newegg.com/is/image/newegg/23-129-022-TS?$S640W$"
+	},
+	"SellerName": "",
+	"ParentItem": "23-129-022",
+	"SellerId": null,
+	"ShipByNewegg": 0,
+	"ItemGroupID": 15860129,
+	"ItemOwnerType": 1,
+	"NumberOfReviews": 0,
+	"AverageRating": 0,
+	"Instock": true,
+	"XmlSpec": null,
+	"WarrantyInfo": null,
+	"NeweggItemNumber": null,
+	"PromotionInfo": null,
+	"InstockForCombo": false,
+	"ETA": "\/Date(-62135596800000)\/",
+	"IsInPMCC": true,
+	"CanAddToCart": true,
+	"StrCartImg": null,
+	"StrAlt": null,
+	"StrAddItem": null,
+	"StaticText": null,
+	"InstantSaving": 0.0,
+	"HasMappingPrice": false,
+	"UnitPrice": 0.0,
+	"BrandInfo": null,
+	"LimitQuantity": 5,
+	"IsShellShockerItem": false,
+	"PromotionText": "Great savings, ends 10/14",
+	"ItemMapPriceMarkType": 0,
+	"IsHot": false,
+	"IsPreLaunch": false,
+	"ItemNumber": "23-129-022",
+	"Academic": false
+}

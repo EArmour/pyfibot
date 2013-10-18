@@ -3,14 +3,13 @@ try:
     sqlite = sqlite3
 except:
     import sqlite
-import time
 import datetime
-import sys
 import os.path
+import sys
+import time
+
 
 # create table urls (id TEXT UNIQUE, nick TEXT, url TEXT, channel TEXT, time int);
-
-
 def init(bot):
     global config
     config = bot.config.get("module_sqlitewanha", None)

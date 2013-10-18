@@ -1,6 +1,7 @@
 
-import time
 from threading import Thread, RLock
+import time
+
 
 class _CleanupThread(Thread):
     def __init__(self, d, pollinterval):

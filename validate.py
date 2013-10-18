@@ -1,7 +1,10 @@
 #!bin/python
-import yaml
 import json
+
+import yaml
+
 import jsonschema
+
 
 print("Loading config..")
 config = yaml.load(file("config.yml"))

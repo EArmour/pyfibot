@@ -1,8 +1,9 @@
 #!/usr/bin/python
 ## (c)2004 Timo Reunanen <parker _et_ wolfenstein _dit_ org>
 
-import time
 import re
+import time
+
 
 _exact=r'''
 ^

@@ -1,0 +1,91 @@
+{
+	"response": {
+		"version": "0.1"
+		,"termsofService": "http://www.wunderground.com/weather/api/d/terms.html"
+		,"features": {
+		"conditions": 1
+		}
+	}
+		,	"current_observation": {
+		"image": {
+		"url":"http://icons-ak.wxug.com/graphics/wu2/logo_130x80.png",
+		"title":"Weather Underground",
+		"link":"http://www.wunderground.com"
+		},
+		"display_location": {
+		"full":"Harrisonburg, VA",
+		"city":"Harrisonburg",
+		"state":"VA",
+		"state_name":"Virginia",
+		"country":"US",
+		"country_iso3166":"US",
+		"zip":"22807",
+		"latitude":"38.43672562",
+		"longitude":"-78.87397766",
+		"elevation":"410.00000000"
+		},
+		"observation_location": {
+		"full":"Vine Street, Harrisonburg, Virginia",
+		"city":"Vine Street, Harrisonburg",
+		"state":"Virginia",
+		"country":"US",
+		"country_iso3166":"US",
+		"latitude":"38.450180",
+		"longitude":"-78.852898",
+		"elevation":"1445 ft"
+		},
+		"estimated": {
+		},
+		"station_id":"KVAHARRI7",
+		"observation_time":"Last Updated on April 2, 3:20 PM EDT",
+		"observation_time_rfc822":"Tue, 02 Apr 2013 15:20:55 -0400",
+		"observation_epoch":"1364930455",
+		"local_time_rfc822":"Tue, 02 Apr 2013 15:21:01 -0400",
+		"local_epoch":"1364930461",
+		"local_tz_short":"EDT",
+		"local_tz_long":"America/New_York",
+		"local_tz_offset":"-0400",
+		"weather":"Clear",
+		"temperature_string":"48.2 F (9.0 C)",
+		"temp_f":48.2,
+		"temp_c":9.0,
+		"relative_humidity":"27%",
+		"wind_string":"From the West at 19.6 MPH Gusting to 19.6 MPH",
+		"wind_dir":"West",
+		"wind_degrees":280,
+		"wind_mph":19.6,
+		"wind_gust_mph":"19.6",
+		"wind_kph":31.5,
+		"wind_gust_kph":"31.5",
+		"pressure_mb":"1018",
+		"pressure_in":"30.06",
+		"pressure_trend":"-",
+		"dewpoint_string":"16 F (-9 C)",
+		"dewpoint_f":16,
+		"dewpoint_c":-9,
+		"heat_index_string":"NA",
+		"heat_index_f":"NA",
+		"heat_index_c":"NA",
+		"windchill_string":"41 F (5 C)",
+		"windchill_f":"41",
+		"windchill_c":"5",
+		"feelslike_string":"41 F (5 C)",
+		"feelslike_f":"41",
+		"feelslike_c":"5",
+		"visibility_mi":"10.0",
+		"visibility_km":"16.1",
+		"solarradiation":"",
+		"UV":"7",
+		"precip_1hr_string":"0.00 in ( 0 mm)",
+		"precip_1hr_in":"0.00",
+		"precip_1hr_metric":" 0",
+		"precip_today_string":"0.00 in (0 mm)",
+		"precip_today_in":"0.00",
+		"precip_today_metric":"0",
+		"icon":"clear",
+		"icon_url":"http://icons-ak.wxug.com/i/c/k/clear.gif",
+		"forecast_url":"http://www.wunderground.com/US/VA/Harrisonburg.html",
+		"history_url":"http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=KVAHARRI7",
+		"ob_url":"http://www.wunderground.com/cgi-bin/findweather/getForecast?query=38.450180,-78.852898"
+	}
+}

@@ -2,6 +2,7 @@
 
 import time
 
+
 namedays = []
 # January
 namedays.append(['-', 'Aapeli', 'Elmo, Elmer', 'Ruut', 'Lea, Leea', 'Harri',

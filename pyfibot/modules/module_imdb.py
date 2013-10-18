@@ -2,6 +2,10 @@
 Parse IMDB urls and display movie information for them
 """
 from __future__ import unicode_literals, print_function, division
+
+import re
+
+
 has_imdb = False
 
 try:
@@ -9,7 +13,6 @@ try:
     has_imdb = True
 except:
     print("Could not find IMDbPY library, please install from http://imdbpy.sourceforge.net/")
-import re
 
 
 def command_imdb(bot, user, channel, args):

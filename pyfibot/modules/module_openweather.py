@@ -1,123 +1,130 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, unicode_literals
-import logging
+from __future__ import print_function, division
+import logging, json
 from datetime import datetime, timedelta
-from math import ceil
-
+from util import getnick
 
 log = logging.getLogger('openweather')
-default_location = 'Helsinki'
-threshold = 120
-
+url = 'http://api.wunderground.com/api/7773d26ca4446975/conditions/forecast/q/%s.json'
+default_location = 'YZF'
+defaults = {}
 
 def init(bot):
-    global default_location
-    global threshold
+    global defaults
+    
     config = bot.config.get('module_openweather', {})
-    default_location = config.get('default_location', 'Helsinki')
-    threshold = int(config.get('threshold', 120))  # threshold to show measuring time in minutes
+    default_location = config.get('default_location', 'YZF')
     log.info('Using %s as default location' % default_location)
-
+    with open('/usr/pyfibot/pyfibot/modules/module_openweather_conf.json') as configfile:
+        defaults = json.load(configfile)
 
 def command_weather(bot, user, channel, args):
-    global default_location
-    global threshold
-    if args:
-        location = args.decode('utf-8')
+    global defaults
+    
+    if not args:
+        if user in defaults:
+            return get_weather(bot, user, channel, defaults[user], True)
+        else:
+            return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
+    
+    splut = args.split(' ', 1)
+    cmd = splut[0]
+    if cmd == "set":
+        set_weather_default(bot, user, channel, splut[1])
     else:
-        location = default_location
+        get_weather(bot, user, channel, args, True)
 
-    url = 'http://openweathermap.org/data/2.5/weather?q=%s&units=metric'
-    r = bot.get_url(url % location)
-
-    if 'cod' not in r.json() or int(r.json()['cod']) != 200:
-        return bot.say(channel, 'Error: API error.')
-    data = r.json()
-
-    if 'name' not in data:
-        return bot.say(channel, 'Error: Location not found.')
-    if 'main' not in data:
-        return bot.say(channel, 'Error: Unknown error.')
-
-    location = '%s, %s' % (data['name'], data['sys']['country'])
-    main = data['main']
-
-    old_data = False
-    if 'dt' in data:
-        measured = datetime.utcfromtimestamp(data['dt'])
-        if datetime.utcnow() - timedelta(minutes=threshold) > measured:
-            old_data = True
-    if old_data:
-        text = '%s (%s UTC): ' % (location, measured.strftime('%Y-%m-%d %H:%M'))
+def set_weather_default(bot, user, channel, args):
+    global defaults
+    
+    defaults[user] = args
+    bot.say(channel,"Default location for {0} set to {1}".format(getnick.get(user), args))
+    with open('/usr/pyfibot/pyfibot/modules/module_openweather_conf.json','w') as file:
+        json.dump(defaults, file)
+    
+def command_fullweather(bot, user, channel, args):
+    global defaults
+    
+    if not args:
+        if user in defaults:
+            parsed = get_weather(bot, user, channel, defaults[user], True)
+        else:
+            return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
     else:
-        text = '%s: ' % location
-
-    if 'temp' not in main:
-        return bot.say(channel, 'Error: Data not found.')
-
-    temperature = main['temp']  # temperature converted from kelvin to celcius
-    text += u'Temperature: %.1f°C' % temperature
-
-    if 'wind' in data and 'speed' in data['wind']:
-        wind = data['wind']['speed']  # Wind speed in mps (m/s)
-
-        feels_like = 13.12 + 0.6215 * temperature - 11.37 * (wind * 3.6) ** 0.16 + 0.3965 * temperature * (wind * 3.6) ** 0.16
-        text += ', feels like: %.1f°C' % feels_like
-        text += ', wind: %.1f m/s' % wind
-
-    if 'humidity' in main:
-        humidity = main['humidity']  # Humidity in %
-        text += ', humidity: %d%%' % humidity
-    if 'pressure' in main:
-        pressure = main['pressure']  # Atmospheric pressure in hPa
-        text += ', pressure: %d hPa' % pressure
-    if 'clouds' in data and 'all' in data['clouds']:
-        cloudiness = data['clouds']['all']  # Cloudiness in %
-        text += ', cloudiness: %d%%' % cloudiness
-
-    return bot.say(channel, text)
-
-
+        parsed = get_weather(bot, user, channel, args, True)
+        
+    info = parsed['current_observation']
+    
+    wind = info['wind_mph']
+    direction = info['wind_dir']
+    pressure = info['pressure_mb']
+    
+    if info['pressure_trend'] == "-":
+        pressuretext = "downward"
+    else:
+        pressuretext = "upward"
+    
+    bot.say(channel, "Wind: %smph from the %s | Pressure: %smb, trending %s" % (wind, direction, pressure, pressuretext))
+    
+    history = info['history_url']
+    
+    bot.say(channel, "Station history at: %s" % history)
+    
 def command_forecast(bot, user, channel, args):
-    def hours_to_text(hours):
-        if hours < 24:
-            return 'tomorrow'
-        return 'in %i days' % ceil(hours / 24)
-
-    global default_location
-    if args:
-        location = args.decode('utf-8')
+    global defaults
+    
+    if not args:
+        if user in defaults:
+            parsed = get_weather(bot, user, channel, defaults[user], False)
+        else:
+            return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
     else:
-        location = default_location
-
-    url = 'http://api.openweathermap.org/data/2.5/forecast/daily?q=%s&cnt=4&mode=json&units=metric'
-    r = bot.get_url(url % location)
-
-    if 'cod' not in r.json() or int(r.json()['cod']) != 200:
-        return bot.say(channel, 'Error: API error.')
-
-    data = r.json()
-
-    if 'city' not in data or 'name' not in data['city']:
-        return bot.say(channel, 'Error: Location not found.')
-
-    if not data['list']:
-        return bot.say(channel, 'Error: No forecast data.')
-
-    text = '%s, %s: ' % (data['city']['name'], data['city']['country'])
-
-    cur_date = datetime.now()
-    forecast_text = []
-    for d in data['list']:
-        date = datetime.fromtimestamp(d['dt'])
-        td = date - cur_date
-        seconds = (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
-        hours = hours_to_text(seconds / 3600)
-        if date.day == cur_date.day:
-            continue
-        forecast_text.append('%s: %.1f-%.1f °C (%s)' % (hours, d['temp']['min'], d['temp']['max'], d['weather'][0]['description']))
-        if len(forecast_text) >= 3:
-            break
-
-    text += ', '.join(forecast_text)
-    return bot.say(channel, text)
+        parsed = get_weather(bot, user, channel, args, False)
+        
+    info = parsed['forecast']['txt_forecast']['forecastday']
+    
+    current = info[0]['title']
+    currentfc = info[0]['fcttext']
+    
+    next = info[1]['title']
+    nextfc = info[1]['fcttext']
+    
+    bot.say(channel, "Forecast for %s: %s" % (current, currentfc))
+    bot.say(channel, "For %s: %s" % (next, nextfc))
+    
+def get_weather(bot, user, channel, args, output):
+    location = args
+        
+    q = bot.get_url(url % location)
+    parsed = q.json()
+    degree_sign= u'\N{DEGREE SIGN}'
+    
+    try:
+        result = parsed['response']['results'][0]
+        bestguess = result['zmw']
+        guesscity = result['city']
+        guessstate = result['state']
+        if output:
+            bot.say(channel, 'Assuming you meant ' + guesscity + ', ' + guessstate + ', heeeeere\'s the weather!')
+        
+        q = bot.get_url(url % bestguess)
+        parsed = q.json()
+    except KeyError:
+        pass
+    
+    try:
+        info = parsed['current_observation']
+        
+        location = info['observation_location']['full']
+        temp = info['temp_f']
+        tempc = info['temp_c']
+        condition = info['weather']
+        humidity = info['relative_humidity']
+        
+        if output:
+            bot.say(channel, getnick.get(user) + ': [' + location + '] Temp: ' + str(temp) + degree_sign + 'F, ' + str(tempc) + degree_sign + 'C | Currently ' + condition + ' | Humidity of ' + humidity)
+        return parsed
+    except KeyError:
+        error = parsed['response']['error']['description']
+        bot.say(channel, "ERROR: %s [for query '%s']" % (error, location))
+        pass

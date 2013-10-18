@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 
+import fnmatch
 import os
 import os.path
-import sys
-import re
 import random
-import fnmatch
+import re
+import sys
 
 
 def expl_parseterm(expl):

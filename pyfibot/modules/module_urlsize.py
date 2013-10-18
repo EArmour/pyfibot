@@ -2,13 +2,14 @@
 Warns about large files
 """
 from __future__ import unicode_literals, print_function, division
+
 import requests
 
 
 def handle_url(bot, user, channel, url, msg):
     """inform about large files (over 5MB)"""
 
-    # TODO: Use reference from bot / config
+    #  Use reference from bot / config
     browser = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11"
 
     s = requests.session()

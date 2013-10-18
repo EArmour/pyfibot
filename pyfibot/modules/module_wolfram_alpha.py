@@ -1,6 +1,8 @@
 from __future__ import unicode_literals, print_function, division
-import urllib
+
 import logging
+import urllib
+
 
 log = logging.getLogger('wolfram_alpha')
 
@@ -27,6 +29,7 @@ def init(bot):
 def command_wa(bot, user, channel, args):
     """Query Wolfram Alpha"""
     if not appid:
+        config = bot.config.get("module_wolfram_alpha", {})
         log.warn("Appid not specified in configuration!")
         return
 

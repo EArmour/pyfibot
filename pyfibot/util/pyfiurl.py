@@ -10,10 +10,11 @@
 
 __version__ = "3.0.3"
 
-import re
 from UserString import UserString
+import re
 import string
 import sys
+
 
 _countrycodes=['ac', 'ad', 'ae', 'af', 'ag', 'ai', 'al', 'am', 'an', 'ao',
                'aq', 'ar', 'as', 'at', 'au', 'aw', 'ax', 'az', 'ba', 'bb',
@@ -125,7 +126,7 @@ validPathChars=[string.ascii_letters,
                 string.digits,
                 '/;?:@&=+$,%#'
                 '-_.!~*()',
-                'åäö[]<>{}^\|\'`–', ## not so valid but used
+                'åäö[]<>{}^\|\'`', ## not so valid but used
                 ]
 
 validUserinfoChars=[string.ascii_letters,
