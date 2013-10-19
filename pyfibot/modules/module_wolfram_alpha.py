@@ -2,7 +2,7 @@ from __future__ import unicode_literals, print_function, division
 
 import logging
 import urllib
-
+import re
 
 log = logging.getLogger('wolfram_alpha')
 
@@ -33,7 +33,7 @@ def command_wa(bot, user, channel, args):
         log.warn("Appid not specified in configuration!")
         return
 
-    r = bot.get_url(query % (urllib.quote(args), appid))
+    r = bot.get_url(query % (urllib.quote(args.encode('utf-8')), appid))
 
     if r.status_code != 200:
         return
@@ -57,9 +57,10 @@ def command_wa(bot, user, channel, args):
         return bot.say(channel, line.encode("UTF-8"))
 
     # first pod has the question as WA sees it
-    question = pods[0].xpath("subpod/plaintext")[0].text
+    question = pods[0].xpath("subpod/plaintext")[0].text.replace(' | ', ' ').replace('\n', ' ')
     # second one has the best answer
-    answer = pods[1].xpath("subpod/plaintext")[0].text
+    answer = pods[1].xpath("subpod/plaintext")[0].text.replace(' | ', ': ').replace('\n', ' | ')
 
-    line = "%s: %s" % (question, answer)
+    # First strip the question and answer of empty chars, then compress multiple spaces to one
+    line = re.sub("[ ]{2,}", " ", "%s - %s" % (question.strip(), answer.strip()))
     return bot.say(channel, line.encode("UTF-8"))
