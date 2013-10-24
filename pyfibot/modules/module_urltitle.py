@@ -413,7 +413,7 @@ def _handle_vimeo(url):
         return "Vimeo: %s [by %s | %s]" % (title, user, "".join(lengthstr))
 
 
-def _handle_stackoverflow(url):
+def _handle_stackoverflow(url, site="Stackoverflow"):
     """*stackoverflow.com/questions/*"""
     api_url = 'https://api.stackexchange.com/2.1/questions/%s?site=stackoverflow'
     match = re.match('.*stackoverflow.com/questions/([0-9]+)', url)
