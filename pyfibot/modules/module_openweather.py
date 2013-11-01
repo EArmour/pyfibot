@@ -20,6 +20,7 @@ def init(bot):
         defaults = json.load(configfile)
 
 def command_weather(bot, user, channel, args):
+    """.weather (set) (location) - Gets weather from Weather Underground (Can store per-used defaults). Also .fullweather, .forecast"""
     global defaults
     
     if not args:
@@ -44,6 +45,7 @@ def set_weather_default(bot, user, channel, args):
         json.dump(defaults, file)
     
 def command_fullweather(bot, user, channel, args):
+    """.fullweather (location) - Gets more weather info from Weather Underground (wind speed and barometric pressure)"""
     global defaults
     
     if not args:
@@ -72,6 +74,7 @@ def command_fullweather(bot, user, channel, args):
     bot.say(channel, "Station history at: %s" % history)
     
 def command_forecast(bot, user, channel, args):
+    """.forecast (location) - Gets next two forecast periods from Weather Underground"""
     global defaults
     
     if not args:

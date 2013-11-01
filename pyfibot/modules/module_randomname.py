@@ -14,6 +14,7 @@ api = "http://www.behindthename.com/api/random.php?usage=%s&gender=%s&randomsurn
 genders = ['m','f','b']
 
 def command_rname(bot, user, channel, args):
+    """.rname [gender] [type] - Generates a random name of the specified type from BehindTheName.com"""
     inputs = args.split()
     
     gender = ""

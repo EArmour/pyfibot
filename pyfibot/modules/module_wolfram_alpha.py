@@ -27,7 +27,7 @@ def init(bot):
 
 
 def command_wa(bot, user, channel, args):
-    """Query Wolfram Alpha"""
+    """.wa [query] - Queries Wolfram Alpha"""
     if not appid:
         config = bot.config.get("module_wolfram_alpha", {})
         log.warn("Appid not specified in configuration!")

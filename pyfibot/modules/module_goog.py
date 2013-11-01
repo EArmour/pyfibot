@@ -17,8 +17,8 @@ def init(bot):
     if not cx:
         log.warning("Google custom search ID not found in config!")
     
-
 def command_goog(bot, user, channel, args):
+    """.goog [query] - Searches Google and returns the first result"""
     global cx
     if not cx:
         return
@@ -39,7 +39,6 @@ def command_goog(bot, user, channel, args):
 #     time = parsed['searchInformation']['formattedSearchTime']
     firstURL = parsed['items'][0]['link']
     title = parsed['items'][0]['title']
-    
     
     bot.say(channel, "Google: %s - %s" % (title, firstURL))
     

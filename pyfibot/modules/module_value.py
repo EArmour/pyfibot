@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Gets appox TF2 backpack value (probably wildy inaccurate!)
-"""
-
 import urllib
 
 from bs4 import BeautifulSoup as bs4
@@ -13,6 +9,7 @@ import requests
 bpackurl = 'http://backpack.tf/id/%s'
 
 def command_value(bot, user, channel, args):
+    """.value [Steam name] - Gets appox TF2 backpack value (probably wildy inaccurate!)"""
     steamname = args
     
 #     steamxml = bs4(urllib.urlopen(steamcomurl % steamname),'xml')

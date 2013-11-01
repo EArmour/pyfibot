@@ -7,6 +7,7 @@ import random as rand
 
 
 def command_roll(bot, user, channel, args):
+    """.roll [die] - Rolls an n-sided die a specified number of times, or use coin to get a quick 50/50"""
     if args == "coin":
         result = rand.randrange(0,2)
         if result is 1:
