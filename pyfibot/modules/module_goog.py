@@ -42,5 +42,5 @@ def command_goog(bot, user, channel, args):
     
     bot.say(channel, "Google: %s - %s" % (title, firstURL))
     
-    module_urltitle.init(bot.factory)
-    module_urltitle.handle_url(bot, user, channel, firstURL, args)
+#     module_urltitle.init(bot.factory)
+#     module_urltitle.handle_url(bot, user, channel, firstURL, args)

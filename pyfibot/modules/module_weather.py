@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
-import logging, json
+import logging, json, os, sys
 from datetime import datetime, timedelta
 from util import getnick
 
-log = logging.getLogger('openweather')
+log = logging.getLogger('weather')
 defaults = {}
 url = 'http://api.wunderground.com/api/%s/conditions/forecast/q/%s.json'
 
@@ -12,11 +12,11 @@ def init(bot):
     global defaults
     global api_key
     
-    config = bot.config.get('module_openweather', {})
+    config = bot.config.get('module_weather', {})
     default_location = config.get('default_location', 'YZF')
     api_key = config.get('wunderground_key')
     log.info('Using %s as default location' % default_location)
-    with open('/usr/pyfibot/pyfibot/modules/module_openweather_conf.json') as configfile:
+    with open(os.path.join(sys.path[0], 'modules', 'module_weather_conf.json')) as configfile:
         defaults = json.load(configfile)
 
 def command_weather(bot, user, channel, args):
