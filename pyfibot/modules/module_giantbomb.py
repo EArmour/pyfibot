@@ -1,45 +1,74 @@
 # -*- coding: utf-8 -*-
 from twisted.internet import reactor
 from twisted.internet import task
-import logging, json, urllib, os, sys, threading
+import logging, json, urllib, os, sys
+from threading import Thread
 from bs4 import BeautifulSoup as bs4
 
 log = logging.getLogger('giantbomb')
 t = None
 videos = {}
+getvids_callLater = None
 
-def init(bot):
-    global videos, t
+def event_signedon(bot):
+    global getvids_callLater, videos
+    
     with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json')) as datafile:
         videos = json.load(datafile)
-        
     log.info("Loaded cached video names")
     
-    if (t != None):
-        log.info("Stopped")
-        t.stop();
+    if getvids_callLater != None:
+        log.info("Stopping previous scraping thread")
+        getvids_callLater.cancel()
+    rotator_getvids(bot, 300)
+    
+def handle_privmsg(bot, user, channel, cmd):
+    global videos
+    msg = cmd[1:]
+    if(user == channel):
+        if(msg == "startgb"):
+            bot.say(channel, "GB scraper started!")
+            with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json')) as datafile:
+                videos = json.load(datafile)
+            log.info("Loaded cached video names")
+            if getvids_callLater != None:
+                log.info("Stopping previous scraping thread")
+                getvids_callLater.cancel()
+            rotator_getvids(bot, 300)
+    if(msg == "chan"):
+        bot.say(channel, channel)
+    
+def finalize():
+    if getvids_callLater != None:
+        log.info("Stopping previous scraping thread")
+        getvids_callLater.cancel()
     
 def command_gb(bot, user, channel, args):
-    global t, videos
-    with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json')) as datafile:
-        videos = json.load(datafile)
-    log.info(videos['article'])
-
-    log.info("Started")
-    t = task.LoopingCall(getvids, bot)
-    t.start(30, now=True)
-    t.stop()
+    global t, videos, getvids_callLater
+    if args:
+        subcommand = args.split()[0]
+        if (subcommand == "ql"):
+            bot.say(channel, "Latest QL: %s" % videos['ql'])
+        elif (subcommand == "feature"):
+            bot.say(channel, "Latest Feature: %s" % videos['feature'])
+        elif (subcommand == "sub"):
+            bot.say(channel, "Latest Subscriber Content: %s" % videos['sub'])
+        elif (subcommand == "article"):
+            bot.say(channel, "Latest Article: %s" % videos['article'])
     
 def getvids(bot):
     """This function is launched from rotator to collect and announce new items from feeds to channel"""
     global videos
     
     change = False
+    channel = "#giantbomb"
+
     page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/quick-looks/"))
     latestname = page.find(itemprop = "name").string
     if not latestname == videos['ql']:
         latestdesc = page.find(itemprop = "description").string
-        bot.say("#giantbomb", "[New QL] %s - %s http://www.giantbomb.com/videos/quick-looks/" % (latestname, latestdesc))
+        bot.say(channel, "[New QL] %s - %s http://www.giantbomb.com/videos/quick-looks/" % (latestname, latestdesc))
+        log.info("New QL")
         videos['ql'] = latestname
         change = True
         
@@ -47,7 +76,8 @@ def getvids(bot):
     latestname = page.find(itemprop = "name").string
     if not latestname == videos['sub']:
         latestdesc = page.find(itemprop = "description").string
-        bot.say("#giantbomb", "[New Subscriber Video] %s - %s http://www.giantbomb.com/videos/subscriber/" % (latestname, latestdesc))
+        bot.say(channel, "[New Subscriber Video] %s - %s http://www.giantbomb.com/videos/subscriber/" % (latestname, latestdesc))
+        log.info("New Sub Video")
         videos['sub'] = latestname
         change = True
         
@@ -55,38 +85,37 @@ def getvids(bot):
     latestname = page.find(itemprop = "name").string
     if not latestname == videos['feature']:
         latestdesc = page.find(itemprop = "description").string
-        bot.say("#giantbomb", "[New Feature] %s - %s http://www.giantbomb.com/videos/features/" % (latestname, latestdesc))
+        bot.say(channel, "[New Feature] %s - %s http://www.giantbomb.com/videos/features/" % (latestname, latestdesc))
+        log.info("New Feature")
         videos['feature'] = latestname
         change = True
-      
-    log.info(videos['article'])   
+
     page = bs4(urllib.urlopen("http://www.giantbomb.com/news/"))
     latestname = page.find(class_ = "title").string
     if not latestname == videos['article']:
         deck = page.find(class_ = "deck")
         latestdesc = deck.string
         link = deck.parent['href']
-        log.info(link)
-        bot.say("#asandbox", "[New Article] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        bot.say("#giantbomb", "[New Article] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
+        bot.say(channel, "[New Article] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
+        log.info("New Article")
         videos['article'] = latestname
         change = True
 
-    log.info(latestname)
-    log.info(videos['article'])
 
     if change:
         with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json'),'w') as datafile:
             json.dump(videos, datafile)
+    else:
+        log.info("No changes found")
     
-# def rotator_getvids(bot, delay):
-#     """Timer for methods/functions"""
-#     try:
-#         global t, getvids_callLater
-#         t = Thread(target=getvids, args=(bot,))
-#         t.daemon = True
-#         t.start()
-#         t.join()
-#         getvids_callLater = reactor.callLater(delay, rotator_getvids, bot, delay)
-#     except Exception, e:
-#         log.error('Error in rotator_output')
+def rotator_getvids(bot, delay):
+    """Timer for methods/functions"""
+    try:
+        global t, getvids_callLater
+        t = Thread(target=getvids, args=(bot,))
+        t.daemon = True
+        t.start()
+        getvids_callLater = reactor.callLater(delay, rotator_getvids, bot, delay)
+    except Exception, e:
+        log.error('Error in rotator_getvids')
+        log.error(e)
