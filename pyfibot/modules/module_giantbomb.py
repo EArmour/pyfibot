@@ -42,7 +42,7 @@ def finalize():
         getvids_callLater.cancel()
     
 def command_gb(bot, user, channel, args):
-    global t, videos, getvids_callLater
+    global videos
     if args:
         subcommand = args.split()[0]
         if (subcommand == "ql"):
@@ -64,28 +64,34 @@ def getvids(bot):
     channel = "#giantbomb"
 
     page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/quick-looks/"))
-    latestname = page.find(itemprop = "name").string
+    name = page.find(class_ = "title")
+    latestname = name.string
     if not latestname == videos['ql']:
         latestdesc = page.find(itemprop = "description").string
-        bot.say(channel, "[New QL] %s - %s http://www.giantbomb.com/videos/quick-looks/" % (latestname, latestdesc))
+        link = name.parent['href']
+        bot.say(channel, "[New QL] %s - %s %s" % (latestname, latestdesc, link))
         log.info("New QL")
         videos['ql'] = latestname
         change = True
         
     page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/subscriber/"))
-    latestname = page.find(itemprop = "name").string
+    name = page.find(class_ = "title")
+    latestname = name.string
     if not latestname == videos['sub']:
         latestdesc = page.find(itemprop = "description").string
-        bot.say(channel, "[New Subscriber Video] %s - %s http://www.giantbomb.com/videos/subscriber/" % (latestname, latestdesc))
+        link = name.parent['href']
+        bot.say(channel, "[New Subscriber Video] %s - %s %s" % (latestname, latestdesc, link))
         log.info("New Sub Video")
         videos['sub'] = latestname
         change = True
         
     page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/features/"))
-    latestname = page.find(itemprop = "name").string
+    name = page.find(class_ = "title")
+    latestname = name.string
     if not latestname == videos['feature']:
         latestdesc = page.find(itemprop = "description").string
-        bot.say(channel, "[New Feature] %s - %s http://www.giantbomb.com/videos/features/" % (latestname, latestdesc))
+        link = name.parent['href']
+        bot.say(channel, "[New Feature] %s - %s %s" % (latestname, latestdesc, link))
         log.info("New Feature")
         videos['feature'] = latestname
         change = True
