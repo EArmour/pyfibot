@@ -334,6 +334,15 @@ def _handle_youtube_gdata(url):
 
         return "YouTube: %s [by %s | %s]" % (title, author, "".join(lengthstr))
 
+def _handle_steamgame(url):
+    """http://store.steampowered.com/app/*"""
+    bs = __get_bs(url)
+    
+    title = bs.find(itemprop = "name").text
+    price = bs.find(itemprop = "price").text
+    
+    return("Steam: %s -- %s" % (title, price))
+
 def _handle_steamsharedfile(url):
     """http://steamcommunity.com/sharedfiles/filedetails/?id=*"""
     bs = __get_bs(url)
@@ -496,8 +505,8 @@ def _handle_amazon(url):
     bs = __get_bs(url)
     
     try:
-        titletag = bs.select("#title")
-        pricetag = bs.select("#priceblock_ourprice")
+        titletag = bs.find("#btAsinTitle")
+        pricetag = bs.find("#actualPriceValue")
     except AttributeError:
         return None
     
