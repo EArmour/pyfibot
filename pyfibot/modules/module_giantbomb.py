@@ -136,7 +136,7 @@ def getvids(bot):
     latesttweet = parsed[0]['id']
     if not latesttweet == videos['tweet']:
         text = parsed[0]['text']
-        bot.say(channel, "LIVE STREAM %s" % text[11:])
+        bot.say(channel, "LIVE STREAM %s" % text[10:])
         log.info("New Livestream Tweet")
         videos['tweet'] = latesttweet
         change = True

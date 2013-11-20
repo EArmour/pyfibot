@@ -1,11 +1,13 @@
 # configs, databases and virtualenv artifacts
 config.yml
 include/
+man/
 module_autoop.db
 pyfibot/bot.config
 rss.db
-pyfibot/modules/module_openweather_conf.json
-.settings/
+pyfibot/modules/module_weather_conf.json
+pyfibot/modules/module_giantbomb_conf.json
+/.settings
 
 #imdbpy
 etc
