@@ -215,14 +215,15 @@ def _handle_tweet(url):
 
     bearer = config.get('twitter_bearer')
     data = bot.get_url(infourl,headers={'Authorization':'Bearer ' + bearer})
+    json = data.json()
+    
+    text = json['text']
+    user = json['user']['screen_name']
+    name = json['user']['name']
 
-    text = data.json()['text']
-    user = data.json()['user']['screen_name']
-    name = data.json()['user']['name']
-
-    retweets  = data.json()['retweet_count']
-    favorites = data.json()['favorite_count']
-    created   = data.json()['created_at']
+    retweets  = json['retweet_count']
+    favorites = json['favorite_count']
+    created   = json['created_at']
     created_date = datetime.strptime(created, "%a %b %d %H:%M:%S +0000 %Y")
     tweet_age = datetime.now()-created_date
     
