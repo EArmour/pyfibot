@@ -9,6 +9,8 @@ log = logging.getLogger('giantbomb')
 t = None
 videos = {}
 getvids_callLater = None
+bot = None
+config = None
 
 def event_signedon(bot):
     global getvids_callLater, videos
@@ -35,6 +37,12 @@ def handle_privmsg(bot, user, channel, cmd):
                 log.info("Stopping previous scraping thread")
                 getvids_callLater.cancel()
             rotator_getvids(bot, 300)
+    
+def init(botref):
+    global config
+    global bot
+    bot = botref
+    config = bot.config.get("module_urltitle", {})
     
 def finalize():
     if getvids_callLater != None:
@@ -69,7 +77,7 @@ def getvids(bot):
     if not latestname == videos['ql']:
         latestdesc = page.find(itemprop = "description").string
         link = name.parent['href']
-        bot.say(channel, "[New QL] %s - %s %s" % (latestname, latestdesc, link))
+        bot.say(channel, "[New QL] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
         log.info("New QL")
         videos['ql'] = latestname
         change = True
@@ -80,7 +88,7 @@ def getvids(bot):
     if not latestname == videos['sub']:
         latestdesc = page.find(itemprop = "description").string
         link = name.parent['href']
-        bot.say(channel, "[New Subscriber Video] %s - %s %s" % (latestname, latestdesc, link))
+        bot.say(channel, "[New Subscriber Video] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
         log.info("New Sub Video")
         videos['sub'] = latestname
         change = True
@@ -91,7 +99,7 @@ def getvids(bot):
     if not latestname == videos['feature']:
         latestdesc = page.find(itemprop = "description").string
         link = name.parent['href']
-        bot.say(channel, "[New Feature] %s - %s %s" % (latestname, latestdesc, link))
+        bot.say(channel, "[New Feature] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
         log.info("New Feature")
         videos['feature'] = latestname
         change = True
@@ -118,6 +126,19 @@ def getvids(bot):
         bot.say(channel, "[New Review by %s] %s - %s http://www.giantbomb.com%s" % (author, latestname, latestdesc, link))
         log.info("New Review")
         videos['review'] = latestname
+        change = True
+
+    livetwitter = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=giantbomblive&count=1"
+    bearer = config.get('twitter_bearer')
+    data = bot.get_url(livetwitter,headers={'Authorization':'Bearer ' + bearer})
+    parsed = data.json()
+    
+    latesttweet = parsed[0]['id']
+    if not latesttweet == videos['tweet']:
+        text = parsed[0]['text']
+        bot.say(channel, "LIVE STREAM %s" % text[11:])
+        log.info("New Livestream Tweet")
+        videos['tweet'] = latesttweet
         change = True
 
     if change:
