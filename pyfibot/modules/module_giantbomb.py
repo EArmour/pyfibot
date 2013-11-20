@@ -35,8 +35,6 @@ def handle_privmsg(bot, user, channel, cmd):
                 log.info("Stopping previous scraping thread")
                 getvids_callLater.cancel()
             rotator_getvids(bot, 300)
-    if(msg == "chan"):
-        bot.say(channel, channel)
     
 def finalize():
     if getvids_callLater != None:
@@ -55,6 +53,8 @@ def command_gb(bot, user, channel, args):
             bot.say(channel, "Latest Subscriber Content: %s" % videos['sub'])
         elif (subcommand == "article"):
             bot.say(channel, "Latest Article: %s" % videos['article'])
+        elif (subcommand == "review"):
+            bot.say(channel, "Latest Review: %s" % videos['review'])
     
 def getvids(bot):
     """This function is launched from rotator to collect and announce new items from feeds to channel"""
@@ -101,6 +101,18 @@ def getvids(bot):
         videos['article'] = latestname
         change = True
 
+    page = bs4(urllib.urlopen("http://www.giantbomb.com/reviews/"))
+    latestname = page.find(class_ = "title").string
+    if not latestname == videos['review']:
+        deck = page.find(class_ = "deck")
+        byline = page.find(class_ = "byline").string
+        author = byline[byline.index("by") + 3:]
+        latestdesc = deck.string
+        link = deck.parent['href']
+        bot.say(channel, "[New Review by %s] %s - %s http://www.giantbomb.com%s" % (author, latestname, latestdesc, link))
+        log.info("New Review")
+        videos['review'] = latestname
+        change = True
 
     if change:
         with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json'),'w') as datafile:
