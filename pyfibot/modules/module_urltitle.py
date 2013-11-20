@@ -338,8 +338,8 @@ def _handle_steamgame(url):
     """http://store.steampowered.com/app/*"""
     bs = __get_bs(url)
     
-    title = bs.find(itemprop = "name").text
-    price = bs.find(itemprop = "price").text
+    title = bs.find(itemprop = "name").text.strip()
+    price = bs.find(itemprop = "price").text.strip()
     
     return("Steam: %s -- %s" % (title, price))
 
