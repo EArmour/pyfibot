@@ -20,7 +20,7 @@ def init(bot):
         defaults = json.load(configfile)
 
 def command_weather(bot, user, channel, args):
-    """.weather (set) (location) - Gets weather from Weather Underground (Can store per-used defaults). Also .fullweather, .forecast"""
+    """.weather [set] (location) - Gets weather from Weather Underground (Can store per-user defaults). Also .fullweather, .forecast"""
     global defaults
     
     if not args:

@@ -6,14 +6,50 @@ IT'S HEEEEERE
 import logging
 import time
 import urllib
+import urllib2
 
 from bs4 import BeautifulSoup as bs4
 import requests
 
-
 log = logging.getLogger("steam")
 storeurl = "http://store.steampowered.com/"
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0", "Accept": "*/*", "Host": "sapi.techieanalyst.net", "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "Content-Length": "26"}
+
+def command_price(bot, user, channel, args):
+    search = args.replace(" ","+")
+#     req = urllib2.Request("http://store.steampowered.com/search/?term=%s&category1=998" % search, headers={"User-Agent":"Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11"})
+#     db = bs4(urllib2.urlopen(req).read())
+    db = bs4(urllib.urlopen("http://store.steampowered.com/search/?term=%s&category1=998" % search))
+    row = db.find(class_ = "search_result_row")
+    appid = row['href'][34:40].strip("/")
+    xml = requests.get("http://steamsales.rhekua.com/xml/sales/app_%s.xml" % appid)
+    pricehist = bs4(xml.text)
+    
+    log.info(row.find(class_ = "search_price").contents)
+    price = row.find(class_ = "search_price").contents[2].string
+    name = row.find(class_ = "search_name").h4.text
+    
+    log.info(name)
+    log.info(appid)
+    log.info(price)
+    current = float(price[1:])
+    
+    lowest = current
+    date = "never"
+    for entry in pricehist.find_all('set'):
+        price = float(entry['value'])
+        if price < lowest:
+            lowest = price
+            date = entry['name']
+        elif price == lowest:
+            if not date == "never":
+                date = entry['name']
+    
+    if lowest == current:
+        bot.say(channel, name + " has never been cheaper than the $" + str(current) + " it is right now!")
+    else:
+        bot.say(channel, name + " is $" + str(current) + " now, but was $" + str(lowest) + " on " + date)
+        
 
 def command_flashdeals(bot, user, channel, args):
     store = bs4(urllib.urlopen(storeurl))
@@ -36,11 +72,11 @@ def command_flashdeals(bot, user, channel, args):
         bot.say(channel, "%s - %s" % (gname, gprice))
         
 def get_name(flash):
-    id = flash['href'][34:-1]    
-    r = requests.post('http://sapi.techieanalyst.net/search_result.php', data='search=%s&standalone=0' % id, headers = headers)
-    
-    s = bs4(r.text)
-    name = s.find(class_ = "txtb1").string
+    gameid = flash['href'][34:40]
+    gameid = gameid.strip("/")
+    r = requests.get('http://store.steampowered.com/apphoverpublic/%s?l=english' % gameid)
+    hover = bs4("<html><head><title>Work</title></head><body>" + r.text + "</body></html>")
+    name = hover.find('h4').string
     
     return name
     
