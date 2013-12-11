@@ -337,6 +337,7 @@ def _handle_youtube_gdata(url):
 
 def _handle_steamgame(url):
     """http://store.steampowered.com/app/*"""
+    log.info("Handling Steam game!")
     bs = __get_bs(url)
     
     title = bs.find(itemprop = "name").text.strip()
@@ -508,14 +509,24 @@ def _handle_amazon(url):
     try:
         titletag = bs.find("#btAsinTitle")
         pricetag = bs.find("#actualPriceValue")
-    except AttributeError:
-        return None
+        title = titletag[0].text.strip()
+        log.info(title)
+    except Exception:
+        titletag = bs.find("h1", id = "title")
+        pricetag = bs.find(class_ = "offer-price")
+        log.info(titletag.contents)
     
-    title = titletag[0].text.strip()
     try:
-        price = pricetag[0].text
+        title = titletag.contents[0].string.strip()
+        price = pricetag.text
         pricedisp = price[price.index('$'):]
-    except IndexError:
+    except Exception:
+        pricetag = bs.find("span", id = "priceblock_ourprice")
+        
+    try:
+        price = pricetag.text
+        pricedisp = price[price.index('$'):]
+    except Exception:
         pricedisp = "$?.??"
         
     return("Amazon: %s -- %s" % (title, pricedisp))
