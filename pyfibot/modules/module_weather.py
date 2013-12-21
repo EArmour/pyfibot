@@ -22,39 +22,42 @@ def init(bot):
 def command_weather(bot, user, channel, args):
     """.weather [set] (location) - Gets weather from Weather Underground (Can store per-user defaults). Also .fullweather, .forecast"""
     global defaults
+    nick = getnick.get(user)
     
     if not args:
-        if user in defaults:
-            return get_weather(bot, user, channel, defaults[user], True)
+        if nick in defaults:
+            return get_weather(bot, nick, channel, defaults[nick], True)
         else:
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
     
     splut = args.split(' ', 1)
     cmd = splut[0]
     if cmd == "set":
-        set_weather_default(bot, user, channel, splut[1])
+        set_weather_default(bot, nick, channel, splut[1])
     else:
-        get_weather(bot, user, channel, args, True)
+        get_weather(bot, nick, channel, args, True)
 
-def set_weather_default(bot, user, channel, args):
+def set_weather_default(bot, nick, channel, args):
     global defaults
     
-    defaults[user] = args
-    bot.say(channel,"Default location for {0} set to {1}".format(getnick.get(user), args))
-    with open('/usr/pyfibot/pyfibot/modules/module_openweather_conf.json','w') as file:
+    defaults[nick] = args
+    with open(os.path.join(sys.path[0], 'modules', 'module_weather_conf.json'),'w') as file:
         json.dump(defaults, file)
+    bot.say(channel,"Default location for {0} set to {1}".format(nick, args))
+
     
 def command_fullweather(bot, user, channel, args):
     """.fullweather (location) - Gets more weather info from Weather Underground (wind speed and barometric pressure)"""
     global defaults
+    nick = getnick.get(user)
     
     if not args:
-        if user in defaults:
-            parsed = get_weather(bot, user, channel, defaults[user], True)
+        if nick in defaults:
+            parsed = get_weather(bot, nick, channel, defaults[nick], True)
         else:
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
     else:
-        parsed = get_weather(bot, user, channel, args, True)
+        parsed = get_weather(bot, nick, channel, args, True)
         
     info = parsed['current_observation']
     
@@ -76,14 +79,15 @@ def command_fullweather(bot, user, channel, args):
 def command_forecast(bot, user, channel, args):
     """.forecast (location) - Gets next two forecast periods from Weather Underground"""
     global defaults
+    nick = getnick.get(user)
     
     if not args:
-        if user in defaults:
-            parsed = get_weather(bot, user, channel, defaults[user], False)
+        if nick in defaults:
+            parsed = get_weather(bot, nick, channel, defaults[nick], False)
         else:
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
     else:
-        parsed = get_weather(bot, user, channel, args, False)
+        parsed = get_weather(bot, nick, channel, args, False)
         
     info = parsed['forecast']['txt_forecast']['forecastday']
     
@@ -96,7 +100,7 @@ def command_forecast(bot, user, channel, args):
     bot.say(channel, "Forecast for %s: %s" % (current, currentfc))
     bot.say(channel, "For %s: %s" % (next, nextfc))
     
-def get_weather(bot, user, channel, args, output):
+def get_weather(bot, nick, channel, args, output):
     global api_key
     
     location = args
@@ -127,7 +131,7 @@ def get_weather(bot, user, channel, args, output):
         humidity = info['relative_humidity']
         
         if output:
-            bot.say(channel, getnick.get(user) + ': [' + location + '] Temp: ' + str(temp) + degree_sign + 'F, ' + str(tempc) + degree_sign + 'C | Currently ' + condition + ' | Humidity of ' + humidity)
+            bot.say(channel, nick + ': [' + location + '] Temp: ' + str(temp) + degree_sign + 'F, ' + str(tempc) + degree_sign + 'C | Currently ' + condition + ' | Humidity of ' + humidity)
         return parsed
     except KeyError:
         error = parsed['response']['error']['description']
