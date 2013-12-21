@@ -105,6 +105,7 @@ def getvids(bot):
         change = True
 
     page = bs4(urllib.urlopen("http://www.giantbomb.com/news/"))
+#     page = bs4(urllib.urlopen("http://www.bifrost.me/test.html"))
     latestname = page.find(class_ = "title").string
     if not latestname == videos['article']:
         deck = page.find(class_ = "deck")

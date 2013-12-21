@@ -16,6 +16,7 @@ storeurl = "http://store.steampowered.com/"
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0", "Accept": "*/*", "Host": "sapi.techieanalyst.net", "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", "Content-Length": "26"}
 
 def command_price(bot, user, channel, args):
+    """.price [Steam game name] - Find whether a currently on-sale Steam game has ever been on sale for cheaper"""
     search = args.replace(" ","+")
 #     req = urllib2.Request("http://store.steampowered.com/search/?term=%s&category1=998" % search, headers={"User-Agent":"Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11"})
 #     db = bs4(urllib2.urlopen(req).read())
@@ -27,7 +28,7 @@ def command_price(bot, user, channel, args):
     
     log.info(row.find(class_ = "search_price").contents)
     price = row.find(class_ = "search_price").contents[2].string
-    name = row.find(class_ = "search_name").h4.text
+    name = row.find(class_ = "search_name").h4.string
     
     log.info(name)
     log.info(appid)
@@ -52,11 +53,12 @@ def command_price(bot, user, channel, args):
         
 
 def command_flashdeals(bot, user, channel, args):
-#     store = bs4(urllib.urlopen(storeurl))
-#     
-#     flashes = store.find(class_ = "flashdeals_row")
-#     links = flashes.find_all('a')
-    
+    """.flashdeals - Finds current Steam sale Flash Deals and displays prices (might need to be manually updated for new sales, ping me)"""
+    store = bs4(urllib.urlopen(storeurl))
+     
+    flashes = store.find(class_ = "flashdeals_row")
+    links = flashes.find_all('a')
+      
 #     script = store.find_all('script')
 #     endunix = script[11].string[143:153]
 #     countdown = int(endunix) - int(time.time())
@@ -64,12 +66,12 @@ def command_flashdeals(bot, user, channel, args):
     
 #     bot.say(channel, "Current FLASH DEALS (%s remaining):" % timer)
 
-    bot.say(channel, "There's no Steam sale on, silly!")
+#     bot.say(channel, "There's no Steam sale on, silly!")
 
-#     for flash in links:       
-#         gname = get_name(flash)
-#         gprice = get_price(flash)
-#         bot.say(channel, "%s - %s" % (gname, gprice))
+    for flash in links:       
+        gname = get_name(flash)
+        gprice = get_price(flash)
+        bot.say(channel, "%s - %s" % (gname, gprice))
         
 def get_name(flash):
     gameid = flash['href'][34:40]
