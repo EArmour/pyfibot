@@ -6,10 +6,12 @@ from util import getnick
 
 log = logging.getLogger('weather')
 defaults = {}
+defaultsLower = {}
 url = 'http://api.wunderground.com/api/%s/conditions/forecast/q/%s.json'
 
 def init(bot):
     global defaults
+    global defaultsLower
     global api_key
     
     config = bot.config.get('module_weather', {})
@@ -18,10 +20,13 @@ def init(bot):
     log.info('Using %s as default location' % default_location)
     with open(os.path.join(sys.path[0], 'modules', 'module_weather_conf.json')) as configfile:
         defaults = json.load(configfile)
+        #For case-insensitive matching
+        defaultsLower = {key.lower():value for key,value in defaults.items()}
 
 def command_weather(bot, user, channel, args):
     """.weather [set] (location) - Gets weather from Weather Underground (Can store per-user defaults). Also .fullweather, .forecast"""
     global defaults
+    global defaultsLower
     nick = getnick.get(user)
     
     if not args:
@@ -31,11 +36,15 @@ def command_weather(bot, user, channel, args):
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
     
     splut = args.split(' ', 1)
-    cmd = splut[0]
+    cmd = splut[0].lower();
+    log.info(cmd)
+    log.info(defaultsLower)
     if cmd == "set":
         set_weather_default(bot, nick, channel, splut[1])
+    elif cmd in defaultsLower:
+        return get_weather(bot, nick, channel, defaultsLower[cmd], True)
     else:
-        get_weather(bot, nick, channel, args, True)
+        return get_weather(bot, nick, channel, args, True)
 
 def set_weather_default(bot, nick, channel, args):
     global defaults
@@ -106,7 +115,7 @@ def get_weather(bot, nick, channel, args, output):
     location = args
     q = bot.get_url(url % (api_key, location))
     parsed = q.json()
-    degree_sign= u'\N{DEGREE SIGN}'
+    degree_sign = u'\N{DEGREE SIGN}'
     
     try:
         result = parsed['response']['results'][0]
@@ -116,7 +125,7 @@ def get_weather(bot, nick, channel, args, output):
         if output:
             bot.say(channel, 'Assuming you meant ' + guesscity + ', ' + guessstate + ', heeeeere\'s the weather!')
         
-        q = bot.get_url(url % bestguess)
+        q = bot.get_url(url % (api_key, bestguess))
         parsed = q.json()
     except KeyError:
         pass
