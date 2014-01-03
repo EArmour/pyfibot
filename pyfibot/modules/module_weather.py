@@ -15,9 +15,7 @@ def init(bot):
     global api_key
     
     config = bot.config.get('module_weather', {})
-    default_location = config.get('default_location', 'YZF')
     api_key = config.get('wunderground_key')
-    log.info('Using %s as default location' % default_location)
     with open(os.path.join(sys.path[0], 'modules', 'module_weather_conf.json')) as configfile:
         defaults = json.load(configfile)
         #For case-insensitive matching
@@ -37,8 +35,6 @@ def command_weather(bot, user, channel, args):
     
     splut = args.split(' ', 1)
     cmd = splut[0].lower();
-    log.info(cmd)
-    log.info(defaultsLower)
     if cmd == "set":
         set_weather_default(bot, nick, channel, splut[1])
     elif cmd in defaultsLower:

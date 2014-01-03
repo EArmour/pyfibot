@@ -78,7 +78,7 @@ def getvids(bot):
         latestdesc = page.find(itemprop = "description").string
         link = name.parent['href']
         bot.say(channel, "[New QL] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New QL")
+        log.info("New QL: %s" % latestname)
         videos['ql'] = latestname
         change = True
         
@@ -89,7 +89,7 @@ def getvids(bot):
         latestdesc = page.find(itemprop = "description").string
         link = name.parent['href']
         bot.say(channel, "[New Subscriber Video] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Sub Video")
+        log.info("New Sub Video: %s" % latestname)
         videos['sub'] = latestname
         change = True
         
@@ -100,19 +100,18 @@ def getvids(bot):
         latestdesc = page.find(itemprop = "description").string
         link = name.parent['href']
         bot.say(channel, "[New Feature] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Feature")
+        log.info("New Feature: %s" % latestname)
         videos['feature'] = latestname
         change = True
 
     page = bs4(urllib.urlopen("http://www.giantbomb.com/news/"))
-#     page = bs4(urllib.urlopen("http://www.bifrost.me/test.html"))
     latestname = page.find(class_ = "title").string
     if not latestname == videos['article']:
         deck = page.find(class_ = "deck")
         latestdesc = deck.string
         link = deck.parent['href']
         bot.say(channel, "[New Article] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Article")
+        log.info("New Article: %s" % latestname)
         videos['article'] = latestname
         change = True
 
@@ -125,7 +124,7 @@ def getvids(bot):
         latestdesc = deck.string
         link = deck.parent['href']
         bot.say(channel, "[New Review by %s] %s - %s http://www.giantbomb.com%s" % (author, latestname, latestdesc, link))
-        log.info("New Review")
+        log.info("New Review: %s" % latestname)
         videos['review'] = latestname
         change = True
 
@@ -145,9 +144,9 @@ def getvids(bot):
     if change:
         with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json'),'w') as datafile:
             json.dump(videos, datafile)
-    else:
-        log.info("No changes found")
-    
+#     else:
+#         log.info("No changes found")
+
 def rotator_getvids(bot, delay):
     """Timer for methods/functions"""
     try:
