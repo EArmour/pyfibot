@@ -10,9 +10,7 @@ defaultsLower = {}
 url = 'http://api.wunderground.com/api/%s/conditions/forecast/q/%s.json'
 
 def init(bot):
-    global defaults
-    global defaultsLower
-    global api_key
+    global defaults, defaultsLower, api_key
     
     config = bot.config.get('module_weather', {})
     api_key = config.get('wunderground_key')
@@ -23,8 +21,7 @@ def init(bot):
 
 def command_weather(bot, user, channel, args):
     """.weather [set] (location) - Gets weather from Weather Underground (Can store per-user defaults). Also .fullweather, .forecast"""
-    global defaults
-    global defaultsLower
+    global defaults, defaultsLower
     nick = getnick.get(user)
     
     if not args:
@@ -43,9 +40,10 @@ def command_weather(bot, user, channel, args):
         return get_weather(bot, nick, channel, args, True)
 
 def set_weather_default(bot, nick, channel, args):
-    global defaults
+    global defaults, defaultsLower
     
     defaults[nick] = args
+    defaultsLower[nick.lower()] = args
     with open(os.path.join(sys.path[0], 'modules', 'module_weather_conf.json'),'w') as file:
         json.dump(defaults, file)
     bot.say(channel,"Default location for {0} set to {1}".format(nick, args))
@@ -53,7 +51,7 @@ def set_weather_default(bot, nick, channel, args):
     
 def command_fullweather(bot, user, channel, args):
     """.fullweather (location) - Gets more weather info from Weather Underground (wind speed and barometric pressure)"""
-    global defaults
+    global defaults, defaultsLower
     nick = getnick.get(user)
     
     if not args:
@@ -61,6 +59,8 @@ def command_fullweather(bot, user, channel, args):
             parsed = get_weather(bot, nick, channel, defaults[nick], True)
         else:
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
+    elif args in defaultsLower:
+        parsed = get_weather(bot, nick, channel, defaultsLower[args], True)
     else:
         parsed = get_weather(bot, nick, channel, args, True)
         
@@ -83,7 +83,7 @@ def command_fullweather(bot, user, channel, args):
     
 def command_forecast(bot, user, channel, args):
     """.forecast (location) - Gets next two forecast periods from Weather Underground"""
-    global defaults
+    global defaults, defaultsLower
     nick = getnick.get(user)
     
     if not args:
@@ -91,6 +91,8 @@ def command_forecast(bot, user, channel, args):
             parsed = get_weather(bot, nick, channel, defaults[nick], False)
         else:
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
+    elif args in defaultsLower:
+        parsed = get_weather(bot, nick, channel, defaultsLower[args], False)
     else:
         parsed = get_weather(bot, nick, channel, args, False)
         
