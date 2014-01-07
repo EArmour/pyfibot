@@ -7,7 +7,7 @@ from util import getnick
 log = logging.getLogger('weather')
 defaults = {}
 defaultsLower = {}
-url = 'http://api.wunderground.com/api/%s/conditions/forecast/q/%s.json'
+url = 'http://api.wunderground.com/api/%s/conditions/forecast/almanac/q/%s.json'
 
 def init(bot):
     global defaults, defaultsLower, api_key
@@ -48,7 +48,6 @@ def set_weather_default(bot, nick, channel, args):
         json.dump(defaults, file)
     bot.say(channel,"Default location for {0} set to {1}".format(nick, args))
 
-    
 def command_fullweather(bot, user, channel, args):
     """.fullweather (location) - Gets more weather info from Weather Underground (wind speed and barometric pressure)"""
     global defaults, defaultsLower
@@ -107,6 +106,58 @@ def command_forecast(bot, user, channel, args):
     bot.say(channel, "Forecast for %s: %s" % (current, currentfc))
     bot.say(channel, "For %s: %s" % (next, nextfc))
     
+def command_records(bot, user, channel, args):
+    """.records (location) - Gets the average and record temps for a location from Weather Underground"""
+    global defaults, defaultsLower
+    nick = getnick.get(user)
+    
+    if not args:
+        if nick in defaults:
+            parsed = get_weather(bot, nick, channel, defaults[nick], False)
+        else:
+            return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
+    elif args in defaultsLower:
+        parsed = get_weather(bot, nick, channel, defaultsLower[args], False)
+    else:
+        parsed = get_weather(bot, nick, channel, args, False)
+        
+    { "response": { 
+                   "version": "0.1", 
+                   "termsofService": "http://www.wunderground.com/weather/api/d/terms.html", 
+                   "features": { 
+                                "almanac": 1 } 
+                   }, 
+     "almanac": { 
+                 "airport_code": "KSFO", 
+                 "temp_high": { 
+                               "normal": { 
+                                          "F": "71", 
+                                          "C": "22" }, 
+                               "record": { 
+                                          "F": "89", 
+                                          "C": "31" }, 
+                               "recordyear": "1970" }, 
+                 "temp_low": { 
+                              "normal": { 
+                                         "F": "54", 
+                                         "C": "12" }, 
+                              "record": { 
+                                         "F": "48", 
+                                         "C": "8" }, 
+                              "recordyear": "1953" } } }
+    
+    airport = parsed['almanac']['airport_code']
+    highInfo = parsed['almanac']['temp_high']
+    lowInfo = parsed['almanac']['temp_low']
+    
+    highTemp = highInfo['record']['F']
+    lowTemp = lowInfo['record']['F']
+    highYear = highInfo['recordyear']
+    lowYear = lowInfo['recordyear']
+    
+    degree_sign = u'\N{DEGREE SIGN}'
+    bot.say(channel, "Today at %s: Highest %s (%s), Lowest %s (%s)" % (airport, str(highTemp) + degree_sign + 'F', highYear, str(lowTemp) + degree_sign + 'F', lowYear))
+    
 def get_weather(bot, nick, channel, args, output):
     global api_key
     
@@ -120,10 +171,12 @@ def get_weather(bot, nick, channel, args, output):
         bestguess = result['zmw']
         guesscity = result['city']
         guessstate = result['state']
+        if guessstate == "":
+            guessstate = result['country_name']
         if output:
             bot.say(channel, 'Assuming you meant ' + guesscity + ', ' + guessstate + ', heeeeere\'s the weather!')
         
-        q = bot.get_url(url % (api_key, bestguess))
+        q = bot.get_url(url % (api_key, 'zmw:' + bestguess))
         parsed = q.json()
     except KeyError:
         pass
