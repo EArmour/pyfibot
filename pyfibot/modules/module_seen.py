@@ -32,8 +32,25 @@ def command_seen(bot, user, channel, args):
         json.dump(users, userfile, indent=2)
 
 def handle_privmsg(bot, user, channel, msg):
-    global users
+    update_user(user, "chatting", msg)
     
+# def handle_userJoined(bot, user, channel):
+#     update_user(user, "joining", channel)
+    
+def handle_userLeft(bot, user, channel, message):
+    update_user(user, "leaving", message)
+
+def handle_userKicked(bot, kickee, channel, kicker, message):
+    update_user(kickee + "!", "kicked by %s" % kicker, message)
+    
+def handle_userRenamed(bot, oldnick, newnick):
+    update_user(oldnick, "changing name to %s" % newnick, "renamed")    
+
+def handle_action(bot, user, channel, data):
+    update_user(user, "performing an action", data)
+    
+def update_user(user, action, msg):
+    global users
     users[getnick.get(user).lower()] = {'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                'action': 'chatting',
-                                'msg': msg}
+                                        'action': action,
+                                        'msg': msg}
