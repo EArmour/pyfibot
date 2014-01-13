@@ -20,7 +20,7 @@ def command_assess(bot, user, channel, args):
     
     try:
         pos = float(parsed[1]['positive'])
-    except KeyError:
+    except Exception:
         return bot.say(channel, "{0}: The internet has no opinion on that insignificant topic!".format(getnick.get(user)))
     
     neg = float(parsed[1]['negative'])

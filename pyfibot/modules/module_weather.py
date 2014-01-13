@@ -45,7 +45,7 @@ def set_weather_default(bot, nick, channel, args):
     defaults[nick] = args
     defaultsLower[nick.lower()] = args
     with open(os.path.join(sys.path[0], 'modules', 'module_weather_conf.json'),'w') as file:
-        json.dump(defaults, file)
+        json.dump(defaults, file, indent=2, sort_keys=True)
     bot.say(channel,"Default location for {0} set to {1}".format(nick, args))
 
 def command_fullweather(bot, user, channel, args):
