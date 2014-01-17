@@ -50,6 +50,7 @@ def finalize():
         getvids_callLater.cancel()
     
 def command_gb(bot, user, channel, args):
+    """.gb [ql|feature|sub|article|review] - Returns the latest item on Giant Bomb on that type"""
     global videos
     if args:
         subcommand = args.split()[0]
@@ -77,8 +78,12 @@ def getvids(bot):
     if not latestname == videos['ql']:
         latestdesc = page.find(itemprop = "description").string
         link = name.parent['href']
-        bot.say(channel, "[New QL] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New QL: %s" % latestname)
+        if latestname[0:1] == "Q":
+            qltype = "QL"
+        else:
+            qltype = "Unfinished"
+        bot.say(channel, "[New %s] %s - %s http://www.giantbomb.com%s" % (qltype, latestname, latestdesc, link))
+        log.info("New %s: %s" % (qltype, latestname))
         videos['ql'] = latestname
         change = True
         
