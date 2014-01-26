@@ -97,11 +97,11 @@ def command_forecast(bot, user, channel, args):
         
     info = parsed['forecast']['txt_forecast']['forecastday']
     
-    current = info[0]['title']
-    currentfc = info[0]['fcttext']
+    current = info[1]['title']
+    currentfc = info[1]['fcttext']
     
-    next = info[1]['title']
-    nextfc = info[1]['fcttext']
+    next = info[2]['title']
+    nextfc = info[2]['fcttext']
     
     bot.say(channel, "Forecast for %s: %s" % (current, currentfc))
     bot.say(channel, "For %s: %s" % (next, nextfc))
@@ -132,6 +132,26 @@ def command_records(bot, user, channel, args):
     
     degree_sign = u'\N{DEGREE SIGN}'
     bot.say(channel, "Today at %s: Highest %s (%s), Lowest %s (%s)" % (airport, str(highTemp) + degree_sign + 'F', highYear, str(lowTemp) + degree_sign + 'F', lowYear))
+    
+def command_time(bot, user, channel, args):
+    """.time (location) - Gets the current time and time zone of a location"""
+    
+    if not args:
+        return bot.say(channel,"No location specified! I hope you already know what time it is where you are.")
+    else:
+        parsed = get_weather(bot, user, channel, args, False)
+        
+    try:
+        info = parsed['current_observation']
+        
+        location = info['display_location']['full']
+        time = info['local_time_rfc822']
+        zone = info['local_tz_long']
+        bot.say(channel, "In %s, it is currently %s (%s)" % (location, time, zone))
+    except KeyError:
+        error = parsed['response']['error']['description']
+        bot.say(channel, "ERROR: %s [for query '%s']" % (error, location))
+        pass
     
 def get_weather(bot, nick, channel, args, output):
     global api_key

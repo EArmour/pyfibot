@@ -50,7 +50,7 @@ def finalize():
         getvids_callLater.cancel()
     
 def command_gb(bot, user, channel, args):
-    """.gb [ql|feature|sub|article|review] - Returns the latest item on Giant Bomb on that type"""
+    """.gb [ql|feature|sub|article|review|bombastica] - Returns the latest item on Giant Bomb on that type"""
     global videos
     if args:
         subcommand = args.split()[0]
@@ -64,6 +64,8 @@ def command_gb(bot, user, channel, args):
             bot.say(channel, "Latest Article: %s" % videos['article'])
         elif (subcommand == "review"):
             bot.say(channel, "Latest Review: %s" % videos['review'])
+        elif (subcommand == "bombastica"):
+            bot.say(channel, "Latest Bombastica: %s" % videos['bombastica'])
     
 def getvids(bot):
     """This function is launched from rotator to collect and announce new items from feeds to channel"""
@@ -131,6 +133,17 @@ def getvids(bot):
         bot.say(channel, "[New Review by %s] %s - %s http://www.giantbomb.com%s" % (author, latestname, latestdesc, link))
         log.info("New Review: %s" % latestname)
         videos['review'] = latestname
+        change = True
+        
+    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/encyclopedia-bombastica/"))
+    name = page.find(class_ = "title")
+    latestname = name.string
+    if not latestname == videos['bombastica']:
+        latestdesc = page.find(itemprop = "description").string
+        link = name.parent['href']
+        bot.say(channel, "[New Bombastica] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
+        log.info("New Bombastica: %s" % latestname)
+        videos['bombastica'] = latestname
         change = True
 
     livetwitter = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=giantbomblive&count=1"

@@ -1,91 +1,496 @@
 {
 	"response": {
-		"version": "0.1"
-		,"termsofService": "http://www.wunderground.com/weather/api/d/terms.html"
-		,"features": {
-		"conditions": 1
+		"version": "0.1",
+		"termsofService": "http://www.wunderground.com/weather/api/d/terms.html",
+		"features": {
+			"conditions": 1,
+			"forecast": 1,
+			"almanac": 1
 		}
-	}
-		,	"current_observation": {
+	},
+	"current_observation": {
 		"image": {
-		"url":"http://icons-ak.wxug.com/graphics/wu2/logo_130x80.png",
-		"title":"Weather Underground",
-		"link":"http://www.wunderground.com"
+			"url": "http://icons-ak.wxug.com/graphics/wu2/logo_130x80.png",
+			"title": "Weather Underground",
+			"link": "http://www.wunderground.com"
 		},
 		"display_location": {
-		"full":"Harrisonburg, VA",
-		"city":"Harrisonburg",
-		"state":"VA",
-		"state_name":"Virginia",
-		"country":"US",
-		"country_iso3166":"US",
-		"zip":"22807",
-		"latitude":"38.43672562",
-		"longitude":"-78.87397766",
-		"elevation":"410.00000000"
+			"full": "Harrisonburg, VA",
+			"city": "Harrisonburg",
+			"state": "VA",
+			"state_name": "Virginia",
+			"country": "US",
+			"country_iso3166": "US",
+			"zip": "22807",
+			"magic": "1",
+			"wmo": "99999",
+			"latitude": "38.43672562",
+			"longitude": "-78.87397766",
+			"elevation": "410.00000000"
 		},
 		"observation_location": {
-		"full":"Vine Street, Harrisonburg, Virginia",
-		"city":"Vine Street, Harrisonburg",
-		"state":"Virginia",
-		"country":"US",
-		"country_iso3166":"US",
-		"latitude":"38.450180",
-		"longitude":"-78.852898",
-		"elevation":"1445 ft"
+			"full": "Vine Street, Harrisonburg, Virginia",
+			"city": "Vine Street, Harrisonburg",
+			"state": "Virginia",
+			"country": "US",
+			"country_iso3166": "US",
+			"latitude": "38.450180",
+			"longitude": "-78.852898",
+			"elevation": "1445 ft"
 		},
 		"estimated": {
+			
 		},
-		"station_id":"KVAHARRI7",
-		"observation_time":"Last Updated on April 2, 3:20 PM EDT",
-		"observation_time_rfc822":"Tue, 02 Apr 2013 15:20:55 -0400",
-		"observation_epoch":"1364930455",
-		"local_time_rfc822":"Tue, 02 Apr 2013 15:21:01 -0400",
-		"local_epoch":"1364930461",
-		"local_tz_short":"EDT",
-		"local_tz_long":"America/New_York",
-		"local_tz_offset":"-0400",
-		"weather":"Clear",
-		"temperature_string":"48.2 F (9.0 C)",
-		"temp_f":48.2,
-		"temp_c":9.0,
-		"relative_humidity":"27%",
-		"wind_string":"From the West at 19.6 MPH Gusting to 19.6 MPH",
-		"wind_dir":"West",
-		"wind_degrees":280,
-		"wind_mph":19.6,
-		"wind_gust_mph":"19.6",
-		"wind_kph":31.5,
-		"wind_gust_kph":"31.5",
-		"pressure_mb":"1018",
-		"pressure_in":"30.06",
-		"pressure_trend":"-",
-		"dewpoint_string":"16 F (-9 C)",
-		"dewpoint_f":16,
-		"dewpoint_c":-9,
-		"heat_index_string":"NA",
-		"heat_index_f":"NA",
-		"heat_index_c":"NA",
-		"windchill_string":"41 F (5 C)",
-		"windchill_f":"41",
-		"windchill_c":"5",
-		"feelslike_string":"41 F (5 C)",
-		"feelslike_f":"41",
-		"feelslike_c":"5",
-		"visibility_mi":"10.0",
-		"visibility_km":"16.1",
-		"solarradiation":"",
-		"UV":"7",
-		"precip_1hr_string":"0.00 in ( 0 mm)",
-		"precip_1hr_in":"0.00",
-		"precip_1hr_metric":" 0",
-		"precip_today_string":"0.00 in (0 mm)",
-		"precip_today_in":"0.00",
-		"precip_today_metric":"0",
-		"icon":"clear",
-		"icon_url":"http://icons-ak.wxug.com/i/c/k/clear.gif",
-		"forecast_url":"http://www.wunderground.com/US/VA/Harrisonburg.html",
-		"history_url":"http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=KVAHARRI7",
-		"ob_url":"http://www.wunderground.com/cgi-bin/findweather/getForecast?query=38.450180,-78.852898"
+		"station_id": "KVAHARRI7",
+		"observation_time": "Last Updated on January 20, 10:07 PM EST",
+		"observation_time_rfc822": "Mon, 20 Jan 2014 22:07:20 -0500",
+		"observation_epoch": "1390273640",
+		"local_time_rfc822": "Mon, 20 Jan 2014 22:07:23 -0500",
+		"local_epoch": "1390273643",
+		"local_tz_short": "EST",
+		"local_tz_long": "America/New_York",
+		"local_tz_offset": "-0500",
+		"weather": "Clear",
+		"temperature_string": "35.8 F (2.1 C)",
+		"temp_f": 35.8,
+		"temp_c": 2.1,
+		"relative_humidity": "57%",
+		"wind_string": "Calm",
+		"wind_dir": "WNW",
+		"wind_degrees": 300,
+		"wind_mph": 0.0,
+		"wind_gust_mph": 0,
+		"wind_kph": 0,
+		"wind_gust_kph": 0,
+		"pressure_mb": "1011",
+		"pressure_in": "29.85",
+		"pressure_trend": "-",
+		"dewpoint_string": "22 F (-6 C)",
+		"dewpoint_f": 22,
+		"dewpoint_c": -6,
+		"heat_index_string": "NA",
+		"heat_index_f": "NA",
+		"heat_index_c": "NA",
+		"windchill_string": "36 F (2 C)",
+		"windchill_f": "36",
+		"windchill_c": "2",
+		"feelslike_string": "36 F (2 C)",
+		"feelslike_f": "36",
+		"feelslike_c": "2",
+		"visibility_mi": "10.0",
+		"visibility_km": "16.1",
+		"solarradiation": "--",
+		"UV": "0",
+		"precip_1hr_string": "0.00 in ( 0 mm)",
+		"precip_1hr_in": "0.00",
+		"precip_1hr_metric": " 0",
+		"precip_today_string": "0.00 in (0 mm)",
+		"precip_today_in": "0.00",
+		"precip_today_metric": "0",
+		"icon": "clear",
+		"icon_url": "http://icons-ak.wxug.com/i/c/k/nt_clear.gif",
+		"forecast_url": "http://www.wunderground.com/US/VA/Harrisonburg.html",
+		"history_url": "http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=KVAHARRI7",
+		"ob_url": "http://www.wunderground.com/cgi-bin/findweather/getForecast?query=38.450180,-78.852898"
+	},
+	"forecast": {
+		"txt_forecast": {
+			"date": "10:00 PM EST",
+			"forecastday": [{
+				"period": 0,
+				"icon": "partlycloudy",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+				"title": "Monday",
+				"fcttext": "Partly cloudy. High of 50F. Breezy. Winds from the WSW at 10 to 20 mph.",
+				"fcttext_metric": "Partly cloudy. High of 15C. Windy. Winds from the WSW at 15 to 30 km/h.",
+				"pop": "10"
+			},
+			{
+				"period": 1,
+				"icon": "chancesnow",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/chancesnow.gif",
+				"title": "Monday Night",
+				"fcttext": "Partly cloudy with a chance of snow after midnight. Low of 27F. Winds from the WNW at 5 to 10 mph shifting to the NNE after midnight. Chance of snow 70%.",
+				"fcttext_metric": "Partly cloudy with a chance of snow after midnight. Low of -3C. Winds from the WNW at 5 to 15 km/h shifting to the NNE after midnight. Chance of snow 70%.",
+				"pop": "70"
+			},
+			{
+				"period": 2,
+				"icon": "snow",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/snow.gif",
+				"title": "Tuesday",
+				"fcttext": "Overcast with snow. High of 34F with a windchill as low as 14F. Winds from the NE at 10 to 15 mph. Chance of snow 100% with accumulations up to 4 in. possible.",
+				"fcttext_metric": "Overcast with snow. High of 1C with a windchill as low as -10C. Breezy. Winds from the NE at 15 to 25 km/h. Chance of snow 100% with accumulations up to 11 cm possible.",
+				"pop": "100"
+			},
+			{
+				"period": 3,
+				"icon": "chancesnow",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/chancesnow.gif",
+				"title": "Tuesday Night",
+				"fcttext": "Overcast with a chance of snow in the evening, then clear. Low of 3F with a windchill as low as -8F. Breezy. Winds from the NNW at 15 to 20 mph. Chance of snow 30% with accumulations up to 2 in. possible.",
+				"fcttext_metric": "Overcast with a chance of snow in the evening, then clear. Low of -16C with a windchill as low as -22C. Windy. Winds from the NNW at 20 to 30 km/h. Chance of snow 30% with accumulations up to 4 cm possible.",
+				"pop": "30"
+			},
+			{
+				"period": 4,
+				"icon": "partlycloudy",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+				"title": "Wednesday",
+				"fcttext": "Clear in the morning, then partly cloudy. High of 27F with a windchill as low as -13F. Winds from the NW at 5 to 20 mph.",
+				"fcttext_metric": "Clear in the morning, then partly cloudy. High of -3C with a windchill as low as -25C. Windy. Winds from the NW at 10 to 30 km/h.",
+				"pop": "10"
+			},
+			{
+				"period": 5,
+				"icon": "mostlycloudy",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/mostlycloudy.gif",
+				"title": "Wednesday Night",
+				"fcttext": "Mostly cloudy. Low of 7F. Winds less than 5 mph.",
+				"fcttext_metric": "Mostly cloudy. Low of -14C. Winds less than 5 km/h.",
+				"pop": "30"
+			},
+			{
+				"period": 6,
+				"icon": "chancesnow",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/chancesnow.gif",
+				"title": "Thursday",
+				"fcttext": "Partly cloudy with a chance of snow. High of 21F with a windchill as low as 3F. Winds from the WSW at 10 to 15 mph. Chance of snow 30%.",
+				"fcttext_metric": "Partly cloudy with a chance of snow. High of -6C with a windchill as low as -16C. Breezy. Winds from the WSW at 15 to 20 km/h. Chance of snow 30%.",
+				"pop": "30"
+			},
+			{
+				"period": 7,
+				"icon": "clear",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/clear.gif",
+				"title": "Thursday Night",
+				"fcttext": "Partly cloudy in the evening, then clear. Low of 0F with a windchill as low as -13F. Winds from the WNW at 5 to 15 mph.",
+				"fcttext_metric": "Partly cloudy in the evening, then clear. Low of -18C with a windchill as low as -25C. Breezy. Winds from the WNW at 10 to 20 km/h.",
+				"pop": "10"
+			}]
+		},
+		"simpleforecast": {
+			"forecastday": [{
+				"date": {
+					"epoch": "1390273200",
+					"pretty": "10:00 PM EST on January 20, 2014",
+					"day": 20,
+					"month": 1,
+					"year": 2014,
+					"yday": 19,
+					"hour": 22,
+					"min": "00",
+					"sec": 0,
+					"isdst": "0",
+					"monthname": "January",
+					"monthname_short": "Jan",
+					"weekday_short": "Mon",
+					"weekday": "Monday",
+					"ampm": "PM",
+					"tz_short": "EST",
+					"tz_long": "America/New_York"
+				},
+				"period": 1,
+				"high": {
+					"fahrenheit": "59",
+					"celsius": "15"
+				},
+				"low": {
+					"fahrenheit": "27",
+					"celsius": "-3"
+				},
+				"conditions": "Partly Cloudy",
+				"icon": "partlycloudy",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+				"skyicon": "partlycloudy",
+				"pop": 10,
+				"qpf_allday": {
+					"in": 0.00,
+					"mm": 0.0
+				},
+				"qpf_day": {
+					"in": 0.00,
+					"mm": 0.0
+				},
+				"qpf_night": {
+					"in": 0.02,
+					"mm": 0.5
+				},
+				"snow_allday": {
+					"in": 0,
+					"cm": 0
+				},
+				"snow_day": {
+					"in": 0,
+					"cm": 0
+				},
+				"snow_night": {
+					"in": 0,
+					"cm": 1
+				},
+				"maxwind": {
+					"mph": 16,
+					"kph": 26,
+					"dir": "West",
+					"degrees": 260
+				},
+				"avewind": {
+					"mph": 9,
+					"kph": 14,
+					"dir": "West",
+					"degrees": 276
+				},
+				"avehumidity": 57,
+				"maxhumidity": 60,
+				"minhumidity": 43
+			},
+			{
+				"date": {
+					"epoch": "1390359600",
+					"pretty": "10:00 PM EST on January 21, 2014",
+					"day": 21,
+					"month": 1,
+					"year": 2014,
+					"yday": 20,
+					"hour": 22,
+					"min": "00",
+					"sec": 0,
+					"isdst": "0",
+					"monthname": "January",
+					"monthname_short": "Jan",
+					"weekday_short": "Tue",
+					"weekday": "Tuesday",
+					"ampm": "PM",
+					"tz_short": "EST",
+					"tz_long": "America/New_York"
+				},
+				"period": 2,
+				"high": {
+					"fahrenheit": "34",
+					"celsius": "1"
+				},
+				"low": {
+					"fahrenheit": "3",
+					"celsius": "-16"
+				},
+				"conditions": "Snow",
+				"icon": "snow",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/snow.gif",
+				"skyicon": "cloudy",
+				"pop": 100,
+				"qpf_allday": {
+					"in": 0.42,
+					"mm": 10.7
+				},
+				"qpf_day": {
+					"in": 0.34,
+					"mm": 8.6
+				},
+				"qpf_night": {
+					"in": 0.06,
+					"mm": 1.5
+				},
+				"snow_allday": {
+					"in": 6,
+					"cm": 16
+				},
+				"snow_day": {
+					"in": 4,
+					"cm": 11
+				},
+				"snow_night": {
+					"in": 2,
+					"cm": 4
+				},
+				"maxwind": {
+					"mph": 14,
+					"kph": 22,
+					"dir": "NNE",
+					"degrees": 19
+				},
+				"avewind": {
+					"mph": 12,
+					"kph": 19,
+					"dir": "South",
+					"degrees": 191
+				},
+				"avehumidity": 62,
+				"maxhumidity": 94,
+				"minhumidity": 53
+			},
+			{
+				"date": {
+					"epoch": "1390446000",
+					"pretty": "10:00 PM EST on January 22, 2014",
+					"day": 22,
+					"month": 1,
+					"year": 2014,
+					"yday": 21,
+					"hour": 22,
+					"min": "00",
+					"sec": 0,
+					"isdst": "0",
+					"monthname": "January",
+					"monthname_short": "Jan",
+					"weekday_short": "Wed",
+					"weekday": "Wednesday",
+					"ampm": "PM",
+					"tz_short": "EST",
+					"tz_long": "America/New_York"
+				},
+				"period": 3,
+				"high": {
+					"fahrenheit": "27",
+					"celsius": "-3"
+				},
+				"low": {
+					"fahrenheit": "7",
+					"celsius": "-14"
+				},
+				"conditions": "Partly Cloudy",
+				"icon": "partlycloudy",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+				"skyicon": "partlycloudy",
+				"pop": 10,
+				"qpf_allday": {
+					"in": 0.00,
+					"mm": 0.0
+				},
+				"qpf_day": {
+					"in": 0.00,
+					"mm": 0.0
+				},
+				"qpf_night": {
+					"in": 0.00,
+					"mm": 0.0
+				},
+				"snow_allday": {
+					"in": 0,
+					"cm": 0
+				},
+				"snow_day": {
+					"in": 0,
+					"cm": 0
+				},
+				"snow_night": {
+					"in": 0,
+					"cm": 0
+				},
+				"maxwind": {
+					"mph": 16,
+					"kph": 26,
+					"dir": "NNW",
+					"degrees": 330
+				},
+				"avewind": {
+					"mph": 6,
+					"kph": 10,
+					"dir": "WNW",
+					"degrees": 297
+				},
+				"avehumidity": 48,
+				"maxhumidity": 71,
+				"minhumidity": 31
+			},
+			{
+				"date": {
+					"epoch": "1390532400",
+					"pretty": "10:00 PM EST on January 23, 2014",
+					"day": 23,
+					"month": 1,
+					"year": 2014,
+					"yday": 22,
+					"hour": 22,
+					"min": "00",
+					"sec": 0,
+					"isdst": "0",
+					"monthname": "January",
+					"monthname_short": "Jan",
+					"weekday_short": "Thu",
+					"weekday": "Thursday",
+					"ampm": "PM",
+					"tz_short": "EST",
+					"tz_long": "America/New_York"
+				},
+				"period": 4,
+				"high": {
+					"fahrenheit": "21",
+					"celsius": "-6"
+				},
+				"low": {
+					"fahrenheit": "0",
+					"celsius": "-18"
+				},
+				"conditions": "Chance of Snow",
+				"icon": "chancesnow",
+				"icon_url": "http://icons-ak.wxug.com/i/c/k/chancesnow.gif",
+				"skyicon": "partlycloudy",
+				"pop": 30,
+				"qpf_allday": {
+					"in": 0.00,
+					"mm": 0.0
+				},
+				"qpf_day": {
+					"in": 0.00,
+					"mm": 0.0
+				},
+				"qpf_night": {
+					"in": 0.00,
+					"mm": 0.0
+				},
+				"snow_allday": {
+					"in": 0,
+					"cm": 0
+				},
+				"snow_day": {
+					"in": 0,
+					"cm": 0
+				},
+				"snow_night": {
+					"in": 0,
+					"cm": 0
+				},
+				"maxwind": {
+					"mph": 11,
+					"kph": 18,
+					"dir": "West",
+					"degrees": 270
+				},
+				"avewind": {
+					"mph": 10,
+					"kph": 16,
+					"dir": "West",
+					"degrees": 281
+				},
+				"avehumidity": 60,
+				"maxhumidity": 92,
+				"minhumidity": 49
+			}]
+		}
+	},
+	"almanac": {
+		"airport_code": "KSHD",
+		"temp_high": {
+			"normal": {
+				"F": "40",
+				"C": "4"
+			},
+			"record": {
+				"F": "66",
+				"C": "18"
+			},
+			"recordyear": "2006"
+		},
+		"temp_low": {
+			"normal": {
+				"F": "22",
+				"C": "-5"
+			},
+			"record": {
+				"F": "3",
+				"C": "-16"
+			},
+			"recordyear": "1998"
+		}
 	}
 }
