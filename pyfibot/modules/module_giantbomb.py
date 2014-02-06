@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from twisted.internet import reactor
 from twisted.internet import task
-import logging, json, urllib, os, sys
+import logging, json, urllib, os, sys, requests
 from threading import Thread
 from bs4 import BeautifulSoup as bs4
 
@@ -157,6 +157,15 @@ def getvids(bot):
         bot.say(channel, "LIVE STREAM %s" % text[10:])
         log.info("New Livestream Tweet")
         videos['tweet'] = latesttweet
+        change = True
+        
+    mixlr = requests.get("https://api.mixlr.com/users/jeff-gerstmann?source=embed&include_comments=false")
+    mdata = mixlr.json()
+    latestmixlr = mdata['broadcasts']
+    if not latestmixlr == videos['mixlr']:
+        bot.say(channel, "Jeff is LIVE on Mixlr: %s" % mdata['url'])
+        log.info("New Mixlr Broadcast")
+        videos['mixlr'] = latestmixlr
         change = True
 
     if change:

@@ -153,6 +153,31 @@ def command_time(bot, user, channel, args):
         bot.say(channel, "ERROR: %s [for query '%s']" % (error, location))
         pass
     
+def command_weatherbattle(bot, user, channel, args):
+    """.weatherbattle [user1] [user2] - Compares the temperature for two users and declares a winner!"""
+    global defaults, defaultsLower
+    degree_sign = u'\N{DEGREE SIGN}'
+    
+    splut = args.split(' ', 1)
+    name1 = splut[0].lower();
+    name2 = splut[1].lower();
+    
+    if name1 and name2 in defaultsLower:
+        json1 = get_weather(bot, splut[0], channel, defaultsLower[name1], False)
+        json2 = get_weather(bot, splut[1], channel, defaultsLower[name2], False)
+    else:
+        return bot.say(channel,"No stored location found for one or both of those users!")
+            
+    temp1 = json1['current_observation']['temp_f']
+    temp2 = json2['current_observation']['temp_f']
+    
+    if temp1 < temp2:
+        return bot.say(channel, "%s wins with %s to %s's %s!" % (splut[0], str(temp1) + degree_sign + 'F', splut[1], str(temp2) + degree_sign + 'F'))
+    elif temp2 < temp1:
+        return bot.say(channel, "%s wins with %s to %s's %s!" % (splut[1], str(temp2) + degree_sign + 'F', splut[0], str(temp1) + degree_sign + 'F'))
+    else:
+        return bot.say(channel, "It's a tie at %s!? I think someone is cheating the system!" % (str(temp1) + degree_sign + 'F'))
+    
 def get_weather(bot, nick, channel, args, output):
     global api_key
     
