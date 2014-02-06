@@ -94,17 +94,27 @@ def command_forecast(bot, user, channel, args):
         parsed = get_weather(bot, nick, channel, defaultsLower[args], False)
     else:
         parsed = get_weather(bot, nick, channel, args, False)
-        
-    info = parsed['forecast']['txt_forecast']['forecastday']
     
-    current = info[1]['title']
-    currentfc = info[1]['fcttext']
+    time = parsed['current_observation']['local_time_rfc822']
+    hour = int(time[17:19])
+    log.info(hour)
+    if hour > 20: #After 8pm, start with tomorrow day
+        start = 2
+    elif hour > 14: #After 2pm, before 8pm, show tonight and tomorrow day
+        start = 1
+    else: #Before 2pm, show today and tonight
+        start = 0
     
-    next = info[2]['title']
-    nextfc = info[2]['fcttext']
+    forecast = parsed['forecast']['txt_forecast']['forecastday']
     
-    bot.say(channel, "Forecast for %s: %s" % (current, currentfc))
-    bot.say(channel, "For %s: %s" % (next, nextfc))
+    firstName = forecast[start]['title']
+    firstFcast = forecast[start]['fcttext']
+    
+    nextName = forecast[start + 1]['title']
+    nextFcast = forecast[start + 1]['fcttext']
+    
+    bot.say(channel, "Forecast for %s: %s" % (firstName, firstFcast))
+    bot.say(channel, "For %s: %s" % (nextName, nextFcast))
     
 def command_records(bot, user, channel, args):
     """.records (location) - Gets the average and record temps for a location from Weather Underground"""
