@@ -97,7 +97,7 @@ def command_forecast(bot, user, channel, args):
     
     time = parsed['current_observation']['local_time_rfc822']
     hour = int(time[17:19])
-    log.info(hour)
+
     if hour > 20: #After 8pm, start with tomorrow day
         start = 2
     elif hour > 14: #After 2pm, before 8pm, show tonight and tomorrow day

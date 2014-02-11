@@ -158,12 +158,13 @@ def getvids(bot):
         log.info("New Livestream Tweet")
         videos['tweet'] = latesttweet
         change = True
-        
+
     mixlr = requests.get("https://api.mixlr.com/users/jeff-gerstmann?source=embed&include_comments=false")
     mdata = mixlr.json()
-    latestmixlr = mdata['broadcasts']
+    url = mdata['url']
+    latestmixlr = mdata['broadcasts'][0]['title']
     if not latestmixlr == videos['mixlr']:
-        bot.say(channel, "Jeff is LIVE on Mixlr: %s" % mdata['url'])
+        bot.say(channel, "Jeff is LIVE on Mixlr: %s - %s" % (latestmixlr, url))
         log.info("New Mixlr Broadcast")
         videos['mixlr'] = latestmixlr
         change = True

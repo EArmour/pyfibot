@@ -1,0 +1,136 @@
+{
+	"username": "Jeff Gerstmann",
+	"id": 27902,
+	"url": "http://mixlr.com/jeff-gerstmann",
+	"profile_image_url": "http://graph.facebook.com/577660201/picture?type=square&return_ssl_resources=1",
+	"about_me": "I am Jeff Gerstmann.",
+	"slug": "jeff-gerstmann",
+	"permalink": "http://mixlr.com/users/27902",
+	"latitude": 38.2473117,
+	"longitude": -122.5712101,
+	"is_live": true,
+	"broadcast_ids": ["9b7f3bd14849b2497ced670761fe35ee"],
+	"time_zone": "London",
+	"is_premium": true,
+	"broadcasts": [{
+		"title": "Monday Night",
+		"id": "9b7f3bd14849b2497ced670761fe35ee",
+		"category_id": 28,
+		"user": {
+			"username": "Jeff Gerstmann",
+			"id": 27902,
+			"slug": "jeff-gerstmann",
+			"profile_image_url": "http://graph.facebook.com/577660201/picture?type=square&return_ssl_resources=1"
+		},
+		"comment_count": 630,
+		"listener_count": 163,
+		"heart_count": 802,
+		"seconds_since_start": 3135,
+		"category_name": "Talk",
+		"user_id": 27902,
+		"tag_list": [],
+		"slug": "monday-night",
+		"url": "http://mixlr.com/jeff-gerstmann/showreel/monday-night",
+		"is_live": true,
+		"started_at": "2014-02-11T03:55:57+00:00",
+		"source": "ios",
+		"streams": {
+			"apple": {
+				"url": "http://mixlr.com/broadcasts/9b7f3bd14849b2497ced670761fe35ee/playlist.m3u8"
+			},
+			"rtmp": {
+				"path": "/ios/production",
+				"stream_name": "9b7f3bd14849b2497ced670761fe35ee",
+				"port": 443
+			}
+		}
+	}],
+	"saved_broadcasts": [{
+		"title": "Friday Nite! or Night, whatever!",
+		"id": "053114da04de39c0f3431bbbe9ee02eb",
+		"category_id": 28,
+		"user": {
+			"username": "Jeff Gerstmann",
+			"id": 27902,
+			"slug": "jeff-gerstmann",
+			"profile_image_url": "http://graph.facebook.com/577660201/picture?type=square&return_ssl_resources=1"
+		},
+		"comment_count": 832,
+		"listener_count": 0,
+		"heart_count": 1706,
+		"seconds_since_start": 871574,
+		"category_name": "Talk",
+		"user_id": 27902,
+		"tag_list": [],
+		"duration": 4019,
+		"bytes": 33151799,
+		"permalink": "http://mixlr.com/broadcasts/053114da04de39c0f3431bbbe9ee02eb",
+		"slug": "friday-nite-or-night-whatever",
+		"url": "http://mixlr.com/jeff-gerstmann/showreel/friday-nite-or-night-whatever",
+		"is_live": false,
+		"started_at": "2014-02-01T02:41:58+00:00",
+		"saved_at": "2014-02-10T07:04:22+00:00",
+		"requested_saving_at": "2014-02-10T07:03:31+00:00",
+		"source": "ios",
+		"streams": {
+			"apple": {
+				"url": "http://mixlr.com/broadcasts/053114da04de39c0f3431bbbe9ee02eb/playlist.m3u8"
+			},
+			"rtmp": {
+				"path": "/ios/production",
+				"stream_name": "053114da04de39c0f3431bbbe9ee02eb.aac",
+				"port": 443
+			}
+		}
+	},
+	{
+		"title": "Jeff Gerstmann's Mixlr",
+		"id": "b3ee6e7f52826b2b5ad00fb340cb4ccd",
+		"category_id": 28,
+		"user": {
+			"username": "Jeff Gerstmann",
+			"id": 27902,
+			"slug": "jeff-gerstmann",
+			"profile_image_url": "http://graph.facebook.com/577660201/picture?type=square&return_ssl_resources=1"
+		},
+		"comment_count": 367,
+		"listener_count": 0,
+		"heart_count": 1153,
+		"seconds_since_start": 904574,
+		"category_name": "Talk",
+		"user_id": 27902,
+		"tag_list": [],
+		"duration": 3610,
+		"bytes": 29870232,
+		"permalink": "http://mixlr.com/broadcasts/b3ee6e7f52826b2b5ad00fb340cb4ccd",
+		"slug": "jeff-gerstmanns-mixlr-52",
+		"url": "http://mixlr.com/jeff-gerstmann/showreel/jeff-gerstmanns-mixlr-52",
+		"is_live": false,
+		"started_at": "2014-01-31T17:31:58+00:00",
+		"saved_at": "2014-02-01T21:55:06+00:00",
+		"requested_saving_at": "2014-02-01T21:53:15+00:00",
+		"source": "ios",
+		"streams": {
+			"apple": {
+				"url": "http://mixlr.com/broadcasts/b3ee6e7f52826b2b5ad00fb340cb4ccd/playlist.m3u8"
+			},
+			"rtmp": {
+				"path": "/ios/production",
+				"stream_name": "b3ee6e7f52826b2b5ad00fb340cb4ccd.aac",
+				"port": 443
+			}
+		}
+	}],
+	"scheduled_broadcasts": [],
+	"v2_scheduled_broadcasts": [],
+	"comment_count": 628,
+	"rtmp_server": "rtmp://edge02.mixlr.com",
+	"least_loaded_server": "edge02.mixlr.com",
+	"share_urls": {
+		"facebook": "http://www.facebook.com/sharer.php?&u=http://mixlr.com/jeff-gerstmann?fb=12571392094092t=Listening%20live%20to%20%22Monday%20Night%22%20by%20Jeff%20Gerstmann%20on%20Mixlr.%20http://mixlr.com/jeff-gerstmann",
+		"twitter": "http://twitter.com/share?url=http://mixlr.com/jeff-gerstmann&text=",
+		"embed_code": "<iframe name=\"mixlr-player\" src=\"http://mixlr.com/embed/jeff-gerstmann?width=600&autoplay=ae\" scrolling=\"no\" frameborder=\"no\" height=\"150\" width=\"600\"></iframe>"
+	},
+	"current_heart_count": 791,
+	"total_heart_count": 116196
+}

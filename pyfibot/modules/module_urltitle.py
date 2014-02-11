@@ -379,7 +379,7 @@ def _handle_steamscreenshot(url):
 
 def _handle_twitch(url):
     """http://www.twitch.tv/*"""
-    
+    #TODO: Fix Twitch handling and add Hitbox.tv
     if "/popout" in url:
         url = url[:-7]
         
