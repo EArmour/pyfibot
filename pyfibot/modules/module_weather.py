@@ -169,8 +169,8 @@ def command_weatherbattle(bot, user, channel, args):
     degree_sign = u'\N{DEGREE SIGN}'
     
     splut = args.split(' ', 1)
-    name1 = splut[0].lower();
-    name2 = splut[1].lower();
+    name1 = splut[0].lower().strip();
+    name2 = splut[1].lower().strip();
     
     if name1 and name2 in defaultsLower:
         json1 = get_weather(bot, splut[0], channel, defaultsLower[name1], False)
