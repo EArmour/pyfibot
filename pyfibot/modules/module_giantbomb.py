@@ -162,7 +162,11 @@ def getvids(bot):
     mixlr = requests.get("https://api.mixlr.com/users/jeff-gerstmann?source=embed&include_comments=false")
     mdata = mixlr.json()
     url = mdata['url']
-    latestmixlr = mdata['broadcasts'][0]['title']
+    live = mdata['is_live']
+    if live:
+        latestmixlr = mdata['broadcasts'][0]['title']
+    else:
+        latestmixlr = videos['mixlr']
     if not latestmixlr == videos['mixlr']:
         bot.say(channel, "Jeff is LIVE on Mixlr: %s - %s" % (latestmixlr, url))
         log.info("New Mixlr Broadcast")

@@ -379,26 +379,20 @@ def _handle_steamscreenshot(url):
 
 def _handle_twitch(url):
     """http://www.twitch.tv/*"""
-    #TODO: Fix Twitch handling and add Hitbox.tv
+    #TODO: Add Hitbox.tv
     if "/popout" in url:
         url = url[:-7]
         
-    bs = __get_bs(url)
+    apiurl = "https://api.twitch.tv/kraken/channels/%s"
+    jsonurl = apiurl % url[url.rfind("/") + 1:]
+    data = bot.get_url(jsonurl)
+    json = data.json()
     
-    name = bs.find("a", {'class': 'channel_name'}).string
-    game = bs.find("a", {'class': 'js-game'}).string
-    if game=="/directory/game/":
-        game = "an unspecified game"
-
-    header = bs.find("span", {'class': 'real_title'}).string
+    title = json['status']
+    name = json['display_name']
+    game = json['game']
     
-    try:
-        team = bs.find("span", {'id': 'team_membership'}).next.next.string
-        title = 'Twitch: %s, playing %s: "%s" (On team %s)' % (name, game, header, team)
-    except Exception:
-        title = 'Twitch: %s, playing %s: "%s"' % (name, game, header)
-        
-    return title
+    return "Twitch: %s playing %s: %s" % (name, game, title)
 
 def _handle_vimeo(url):
     """*vimeo.com/*"""
