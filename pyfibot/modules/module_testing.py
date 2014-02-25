@@ -2,12 +2,8 @@
 
 import re
 
-from util import getnick
-
-
-# def command_aff(bot, user, channel, args):
-# #     asin = re.search('/([A-Z0-9]{10})',args)
-#     bot.say(channel, "asin")
+import pyfibot
+    
 # def handle_topicUpdated(bot, user, channel, topic):
 #     pass
 #     nick = getnick.get(user)
