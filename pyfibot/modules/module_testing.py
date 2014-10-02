@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-
-import re
-
+import urllib, logging
 import pyfibot
-    
+from bs4 import BeautifulSoup as bs4
+
+log = logging.getLogger('testing')
+
 # def handle_topicUpdated(bot, user, channel, topic):
 #     pass
 #     nick = getnick.get(user)

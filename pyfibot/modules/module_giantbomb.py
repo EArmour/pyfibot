@@ -80,12 +80,8 @@ def getvids(bot):
     if not latestname == videos['ql']:
         latestdesc = page.find(itemprop = "description").string
         link = name.parent['href']
-        if latestname[0:1] == "Q":
-            qltype = "QL"
-        else:
-            qltype = "Unfinished"
-        bot.say(channel, "[New %s] %s - %s http://www.giantbomb.com%s" % (qltype, latestname, latestdesc, link))
-        log.info("New %s: %s" % (qltype, latestname))
+        bot.say(channel, "[New Quick Look] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
+        log.info("New Quick Look: %s" % latestname)
         videos['ql'] = latestname
         change = True
         
@@ -146,6 +142,28 @@ def getvids(bot):
         videos['bombastica'] = latestname
         change = True
 
+    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/events/"))
+    name = page.find(class_="title")
+    latestname = name.string
+    if not latestname == videos['event']:
+        latestdesc = page.find(itemprop="description").string
+        link = name.parent['href']
+        bot.say(channel, "[New Event Video] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
+        log.info("New Event Video: %s" % latestname)
+        videos['event'] = latestname
+        change = True
+
+    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/unfinished/"))
+    name = page.find(class_="title")
+    latestname = name.string
+    if not latestname == videos['unfinished']:
+        latestdesc = page.find(itemprop="description").string
+        link = name.parent['href']
+        bot.say(channel, "[New Unfinished] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
+        log.info("New Unfinished: %s" % latestname)
+        videos['unfinished'] = latestname
+        change = True
+
     livetwitter = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=giantbomblive&count=1"
     bearer = config.get('twitter_bearer')
     data = bot.get_url(livetwitter,headers={'Authorization':'Bearer ' + bearer})
@@ -163,15 +181,16 @@ def getvids(bot):
     mdata = mixlr.json()
     url = mdata['url']
     live = mdata['is_live']
-    if live:
+    if live and not videos['mixlrlive']:
         latestmixlr = mdata['broadcasts'][0]['title']
-    else:
-        latestmixlr = videos['mixlr']
-    if not latestmixlr == videos['mixlr']:
         bot.say(channel, "Jeff is LIVE on Mixlr: %s - %s" % (latestmixlr, url))
         log.info("New Mixlr Broadcast")
         videos['mixlr'] = latestmixlr
+        videos['mixlrlive'] = True
         change = True
+    elif videos['mixlrlive'] and not live:
+        videos['mixlrlive'] = False
+        change=True
 
     if change:
         with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json'),'w') as datafile:

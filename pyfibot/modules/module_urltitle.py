@@ -17,13 +17,12 @@ import json
 import logging
 import re
 from types import TupleType
-import urlparse
+import urllib
 
 from bs4 import BeautifulSoup
 
 import botcore
 from util import pyfiurl
-
 
 has_json = True
 
@@ -531,13 +530,18 @@ def _handle_newegg(url):
     if len(pid) > 15:
         pid = pid[:pid.index('&')]
         
-    r = bot.get_url('http://www.ows.newegg.com/Products.egg/' + pid)
-    
-    data = r.json()
-    
-    title = data['Title']
-    pricedisp = data['FinalPrice']
-        
+    # r = bot.get_url('http://www.ows.newegg.com/Products.egg/' + pid)
+
+    # data = r.json()
+    #
+    # title = data['Title']
+    # pricedisp = data['FinalPrice']
+
+    r = BeautifulSoup(urllib.urlopen('http://www.newegg.com/Product/MappingPrice.aspx?Item=' + pid))
+
+    title = r.find('p', {'class': 'title'}).text
+    pricedisp = r.find('h3', {'class': 'zmp'}).text.strip()
+
     return("Newegg: %s -- %s" % (title, pricedisp))
     
 
