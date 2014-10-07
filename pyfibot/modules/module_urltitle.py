@@ -339,10 +339,12 @@ def _handle_steamgame(url):
     log.info("Handling Steam game!")
     bs = __get_bs(url)
     
-    title = bs.find(itemprop = "name").text.strip()
-    price = bs.find(itemprop = "price").text.strip()
-    
-    return("Steam: %s -- %s" % (title, price))
+    title = bs.find(itemprop="name").text.strip()
+    price = bs.find(itemprop="price")['content']
+    # price = bs.find("div", {'class': 'discount_final_price'}).text.strip()
+    reception = bs.find("span", {'class': 'game_review_summary'}).text.strip().lower()
+
+    return "Steam: %s -- $%s (Generally %s reviews)" % (title, price, reception)
 
 def _handle_steamsharedfile(url):
     """http://steamcommunity.com/sharedfiles/filedetails/?id=*"""
