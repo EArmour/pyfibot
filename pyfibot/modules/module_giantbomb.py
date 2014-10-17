@@ -126,7 +126,11 @@ def getvids(bot):
         author = byline[byline.index("by") + 3:]
         latestdesc = deck.string
         link = deck.parent['href']
-        bot.say(channel, "[New Review by %s] %s - %s http://www.giantbomb.com%s" % (author, latestname, latestdesc, link))
+        scorespan = page.find(class_ = "score")
+        scoreclass = scorespan['class'][2]
+        score = scoreclass[scoreclass.find('-')+1:]
+        bot.say(channel, "[New %s-Star Review by %s] %s - %s http://www.giantbomb.com%s" % (score, author, latestname,
+                                                                                         latestdesc, link))
         log.info("New Review: %s" % latestname)
         videos['review'] = latestname
         change = True

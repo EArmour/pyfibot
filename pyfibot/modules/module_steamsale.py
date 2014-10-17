@@ -22,17 +22,14 @@ def command_price(bot, user, channel, args):
 #     db = bs4(urllib2.urlopen(req).read())
     db = bs4(urllib.urlopen("http://store.steampowered.com/search/?term=%s&category1=998" % search))
     row = db.find(class_ = "search_result_row")
-    appid = row['href'][34:40].strip("/")
+    appid = row['data-ds-appid']
     xml = requests.get("http://steamsales.rhekua.com/xml/sales/app_%s.xml" % appid)
     pricehist = bs4(xml.text)
     
-    log.info(row.find(class_ = "search_price").contents)
-    price = row.find(class_ = "search_price").contents[2].string
-    name = row.find(class_ = "search_name").h4.string
-    
-    log.info(name)
-    log.info(appid)
-    log.info(price)
+    name = row.find("span", {'class': 'title'}).string
+    price = row.find(class_ = "search_price").text
+    price = price[price.rfind('$'):]
+
     current = float(price[1:])
     
     lowest = current
