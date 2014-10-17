@@ -463,7 +463,6 @@ def _handle_steamscreenshot(url):
 
 def _handle_twitch(url):
     """http://www.twitch.tv/*"""
-    #TODO: Add Hitbox.tv
     if "/popout" in url:
         url = url[:-7]
         
@@ -1221,7 +1220,13 @@ def _handle_google_play_music(url):
 
 def _handle_github(url):
     """http*://*github.com*"""
-    return __get_title_tag(url)
+    bs = __get_bs(url)
+    if not bs:
+        return False
+
+    repo = bs.find('a', {'class': 'js-repo-home-link'}).text.strip()
+    desc = bs.find('div', {'class': 'repository-description'}).find('p').text.strip()
+    return "GitHub: %s - %s" % (repo, desc)
 
 
 def _handle_gitio(url):
