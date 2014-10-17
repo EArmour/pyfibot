@@ -227,8 +227,8 @@ def handle_url(bot, user, channel, url, msg):
                 # handler found, abort
                 return _title(bot, channel, title, True)
             else:
-                # No specific handler, use generic
-                pass
+                # No specific handler, use generic (BUT DON'T)
+                return
 
     log.debug("No specific handler found, using generic")
     # Fall back to generic handler
@@ -281,71 +281,12 @@ def handle_url(bot, user, channel, url, msg):
         pass
 
 
-def _check_redundant(url, title):
-    """Returns true if the url and title are similar enough."""
-    # Remove hostname from the title
-    hostname = urlparse.urlparse(url.lower()).netloc
-    hostname = ".".join(hostname.split('@')[-1].split(':')[0].lstrip('www.').split('.'))
-    cmp_title = title.lower()
-    for part in hostname.split('.'):
-        idx = cmp_title.replace(' ', '').find(part)
-        if idx != -1:
-            break
-
-    if idx > len(cmp_title) / 2:
-        cmp_title = cmp_title[0:idx + (len(title[0:idx]) - len(title[0:idx].replace(' ', '')))].strip()
-    elif idx == 0:
-        cmp_title = cmp_title[idx + len(hostname):].strip()
-    # Truncate some nordic letters
-    unicode_to_ascii = {u'\u00E4': 'a', u'\u00C4': 'A', u'\u00F6': 'o', u'\u00D6': 'O', u'\u00C5': 'A', u'\u00E5': 'a'}
-    for i in unicode_to_ascii:
-        cmp_title = cmp_title.replace(i, unicode_to_ascii[i])
-
-    cmp_url = url.replace("-", " ")
-    cmp_url = url.replace("+", " ")
-    cmp_url = url.replace("_", " ")
-
-    parts = cmp_url.lower().rsplit("/")
-
-    distances = []
-    for part in parts:
-        if part.rfind('.') != -1:
-            part = part[:part.rfind('.')]
-        distances.append(_levenshtein_distance(part, cmp_title))
-
-    if len(title) < 20 and min(distances) < 5:
-        return True
-    elif len(title) >= 20 and len(title) <= 30 and min(distances) < 10:
-        return True
-    elif len(title) > 30 and len(title) <= 60 and min(distances) <= 21:
-        return True
-    elif len(title) > 60 and min(distances) < 37:
-        return True
-    return False
-
-
-def _levenshtein_distance(s, t):
-    d = [[i] + [0] * len(t) for i in xrange(0, len(s) + 1)]
-    d[0] = [i for i in xrange(0, (len(t) + 1))]
-
-    for i in xrange(1, len(d)):
-        for j in xrange(1, len(d[i])):
-            if len(s) > i - 1 and len(t) > j - 1 and s[i - 1] == t[j - 1]:
-                d[i][j] = d[i - 1][j - 1]
-            else:
-                d[i][j] = min((d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + 1))
-
-    return d[len(s)][len(t)]
-
-
-def _title(bot, channel, title, smart=False, prefix=None):
+def _title(bot, channel, title, smart=False):
     """Say title to channel"""
 
     if not title:
         return
 
-    if not prefix:
-        prefix = "Title:"
     info = None
     # tuple, additional info
     if type(title) == TupleType:
@@ -356,9 +297,9 @@ def _title(bot, channel, title, smart=False, prefix=None):
         title = title[:200] + "..."
 
     if not info:
-        return bot.say(channel, "%s %s" % (prefix, title))
+        return bot.say(channel, "%s" % title)
     else:
-        return bot.say(channel, "%s %s [%s]" % (prefix, title, info))
+        return bot.say(channel, "%s [%s]" % (title, info))
 
 # Some handlers does not have if not bs: return, but why do we even have this for every function
 def _handle_tweet2(url):
@@ -789,7 +730,7 @@ def _handle_wikipedia(url):
 
 
 def _handle_imgur(url):
-    """http://*imgur.com*"""
+    """http*://*imgur.com*"""
 
     def create_title(data):
         section = data['data']['section']
@@ -800,8 +741,8 @@ def _handle_imgur(url):
             title = data['data']['images'][0]['title']
             section = data['data']['images'][0]['section']
 
-        if section:
-            return "%s (/r/%s)" % (title, section)
+        # if section:
+        #     return "%s (/r/%s)" % (title, section)
         return title
 
     client_id = config.get("imgur_clientid")
