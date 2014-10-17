@@ -38,7 +38,7 @@ class CoreCommands(object):
                  (self.factory.getNick(user), self.pingAve * 100.0))
 
     def command_rehash(self, user, channel, args):
-        """Reload modules. Usage: rehash [debug]"""
+        """Reload modules and optionally the configuration file. Usage: rehash [conf]"""
 
         if self.factory.isAdmin(user):
             try:
@@ -46,8 +46,15 @@ class CoreCommands(object):
                 log.info("rebuilding %r" % self)
                 rebuild.updateInstance(self)
 
-                self.factory._loadmodules()
+                # reload config file
+                if args == 'conf':
+                    self.factory.reload_config()
+                    self.say(channel, 'Configuration reloaded.')
 
+                # unload removed modules
+                self.factory._unload_removed_modules()
+                # reload modules
+                self.factory._loadmodules()
             except Exception, e:
                 self.say(channel, "Rehash error: %s" % e)
                 log.error("Rehash error: %s" % e)
@@ -119,13 +126,20 @@ class CoreCommands(object):
         except KeyError:
             self.say(channel, "I am not on that network.")
         else:
-            if newchannel not in bot.network.channels:
-                self.say(channel, "I am not in %s on %s." % (newchannel, network))
-                self.say(channel, "I am on %s" % bot.network.channels)
-            else:
+            # no arguments, attempt to part current channel
+            if not newchannel:
+                log.debug("Parted channel %s" % channel)
+                bot.network.channels.remove(channel)
+                bot.part(channel)
+                return
+
+            if newchannel in bot.network.channels:
                 log.debug("Parted channel %s" % newchannel)
                 bot.network.channels.remove(newchannel)
                 bot.part(newchannel)
+            else:
+                log.debug("Attempted to part channel I am not on: %s@%s" % (newchannel, network))
+                log.debug("Channels on network: %s" % bot.network.channels)
 
     def command_quit(self, user, channel, args):
         """Usage: logoff - Leave this network"""
@@ -171,8 +185,8 @@ class PyFiBot(irc.IRCClient, CoreCommands):
     realname = "https://github.com/EArmour/pyfibot"
     password = None
 
-    # send 1 msg per second max
-    linerate = 1
+    # send 2 msgs per second max
+    lineRate = 0.5
     hasQuit = False
 
     CMDCHAR = "."
@@ -183,7 +197,8 @@ class PyFiBot(irc.IRCClient, CoreCommands):
     def __init__(self, network):
         self.network = network
         self.nickname = self.network.nickname
-        self.linerate = self.network.linerate
+        self.lineRate = self.network.linerate
+        self.password = self.network.password
         # Text wrapper to clip overly long answers
         self.tw = textwrap.TextWrapper(width=400, break_long_words=True)
         log.info("bot initialized")
@@ -191,7 +206,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
     def __repr__(self):
         return 'PyFiBot(%r, %r)' % (self.nickname, self.network.address)
 
-    """Core"""
+    # Core
     def printResult(self, msg, info):
         # Don't print results if there is nothing to say (usually non-operation on module)
         if msg:
@@ -210,20 +225,54 @@ class PyFiBot(irc.IRCClient, CoreCommands):
         log.info("connection lost: %s", reason)
 
     def signedOn(self):
-        """Called when bot has succesfully signed on to server."""
-        log.info("Signed on to network")
-        # QuakeNet specific auth and IP-address masking
-        # Alias could be case-sensitive
-        if self.network.alias == "quakenet":
-            log.info("I'm on quakenet, authenticating...")
-            self.mode(self.nickname, '+', 'x')  # Hide ident
-            authname = self.factory.config['networks']['quakenet'].get('authname', None)
-            authpass = self.factory.config['networks']['quakenet'].get('authpass', None)
-            if not authname or not authpass:
-                log.info("Quakenet authname or authpass not found. Authentication aborted")
-            else:
+        """Called when bot has succesfully connected to a server."""
+        log.info("Connected to network")
+
+        network_conf = self.factory.config['networks'][self.network.alias]
+
+        # Name used for authentication
+        authname = network_conf.get('authname', None)
+        # Pass used for authentication
+        authpass = network_conf.get('authpass', None)
+
+        # If authentication is used
+        if authname and authpass:
+            # QuakeNet specific auth and IP-address masking
+            if self.network.alias.lower() == "quakenet":
+                log.info("I'm on Quakenet, authenticating...")
+                self.mode(self.nickname, '+', 'x')  # Hide ident
+                log.info("Authenticating...")
                 self.say("Q@CServe.quakenet.org", "AUTH %s %s" % (authname, authpass))
-                log.info("Auth sent.")
+            # more generic authentication
+            else:
+                # Get authentication service
+                # Default: None
+                # None as default, so the user must be sure who he's authenticating to
+                authservice = network_conf.get('authservice', None)
+                if authservice:
+                    # Command used for authentication
+                    # Default: "IDENTIFY authname authpass"
+                    authcommand = network_conf.get('authcommand', 'IDENTIFY %(authname)s %(authpass)s')
+                    authcommand = authcommand % {'authname': authname, 'authpass': authpass}
+
+                    log.info('Authenticating to "%s"' % authservice)
+                    log.debug('Authentication command used: "%s"' % authcommand)
+                    self.say(authservice, authcommand)
+                else:
+                    log.info('authservice not set, authentication not attempted')
+        else:
+            log.debug('authname or authpass not found, authentication not attempted')
+
+        authdelay = network_conf.get('authdelay', None)
+        if authdelay:
+            # allowing the connection to establish and authentication to happen before joining
+            log.info("Joining channels after %s second delay" % (authdelay))
+            reactor.callLater(authdelay, self.joinChannels)
+        else:
+            self.joinChannels()
+
+    # separate function to allow timing the joins
+    def joinChannels(self):
         for chan in self.network.channels:
             # Defined as a tuple, channel has a key
             if type(chan) == list:
@@ -241,12 +290,12 @@ class PyFiBot(irc.IRCClient, CoreCommands):
         reactor.callLater(delay, self.repeatingPing, delay)
         self.ping(self.nickname)
 
-    # Move the function here completely
+    # TODO: Move the function here completely
     def get_url(self, url, nocache=False, params=None, headers=None):
         return self.factory.getUrl(url, nocache, params, headers)
 
-    def getUrl(self, url, nocache=False, params=None, headers=None):
-        return self.factory.getUrl(url, nocache, params, headers)
+    def getUrl(self, url, nocache=False, params=None, headers=None, cookies=None):
+        return self.factory.getUrl(url, nocache, params, headers, cookies)
 
     def log(self, message):
         botId = "%s@%s" % (self.nickname, self.network.alias)
@@ -255,7 +304,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
     def callLater(self, delay, callable):
         self.callLater(delay, callable)
 
-    """Communication"""
+    # Communication
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message.
         @param user: nick!user@host
@@ -286,7 +335,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
             self._command(user, reply, cmnd)
 
         # Run privmsg handlers
-        self._runhandler("privmsg", user, reply, msg)
+        self._runhandler("privmsg", user, reply, self._to_unicode(msg))
 
         # run URL handlers
         urls = pyfiurl.grab(msg)
@@ -305,7 +354,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
 
             for hname, func in handlers:
                 # defer each handler to a separate thread, assign callbacks to see when they end
-                # Profiling: add time.time() to callback params, calculate difference
+                # TODO: Profiling: add time.time() to callback params, calculate difference
                 d = threads.deferToThread(func, self, *args, **kwargs)
                 d.addCallback(self.printResult, "handler %s completed" % hname)
                 d.addErrback(self.printError, "handler %s error" % hname)
@@ -321,7 +370,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
 
             for ename, func in events:
                 # defer each handler to a separate thread, assign callbacks to see when they end
-                # Profiling: add time.time() to callback params, calculate difference
+                # TODO: Profiling: add time.time() to callback params, calculate difference
                 d = threads.deferToThread(func, self, *args, **kwargs)
                 d.addCallback(self.printResult, "%s %s event completed" % (module, ename))
                 d.addErrback(self.printError, "%s %s event error" % (module, ename))
@@ -355,7 +404,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
             for cname, command in commands:
                 log.info("module command %s called by %s (%s) on %s" % (cname, user, self.factory.isAdmin(user), channel))
                 # Defer commands to threads
-                d = threads.deferToThread(command, self, user, channel, args)
+                d = threads.deferToThread(command, self, user, channel, self._to_unicode(args))
                 d.addCallback(self.printResult, "command %s completed" % cname)
                 d.addErrback(self.printError, "command %s error" % cname)
 
@@ -365,12 +414,27 @@ class PyFiBot(irc.IRCClient, CoreCommands):
             _string = _string.encode("UTF-8")
         return _string
 
+    def _to_unicode(self, _string):
+        """Convert string to UTF-8 if it is unicode"""
+        if not isinstance(_string, unicode):
+            try:
+                _string = unicode(_string)
+            except:
+                try:
+                    _string = _string.decode('utf-8')
+                except:
+                    _string = _string.decode('iso-8859-1')
+        return _string
+
     ### Overrides for twisted.words.irc core commands ###
     def say(self, channel, message, length=None):
         """Override default say to make replying to private messages easier"""
 
+        # Encode channel
+        # (for cases where channel is specified in code instead of "answering")
+        channel = self.factory.to_utf8(channel)
         # Encode all outgoing messages to UTF-8
-        message = self._to_utf8(message)
+        message = self.factory.to_utf8(message)
 
         # Change nick!user@host -> nick, since all servers don't support full hostmask messaging
         if "!" and "@" in channel:
@@ -392,32 +456,36 @@ class PyFiBot(irc.IRCClient, CoreCommands):
         """Use act instead of describe for actions"""
         return super(PyFiBot, self).describe(channel, message)
 
-    def mode(self, chan, set, modes, limit = None, user = None, mask = None):
-        chan  = self._to_utf8(chan)
-        _set  = self._to_utf8(set)
+    def mode(self, chan, set, modes, limit=None, user=None, mask=None):
+        chan = self._to_utf8(chan)
+        _set = self._to_utf8(set)
         modes = self._to_utf8(modes)
         return super(PyFiBot, self).mode(chan, _set, modes, limit, user, mask)
 
+    def kick(self, channel, user, reason=None):
+        reason = self.factory.to_utf8(reason)
+        return super(PyFiBot, self).kick(channel, user, reason)
+
     def join(self, channel, key=None):
-        channel = self._to_utf8(channel)
+        channel = self.factory.to_utf8(channel)
         return super(PyFiBot, self).join(channel, key)
 
     def leave(self, channel, key=None):
-        channel = self._to_utf8(channel)
+        channel = self.factory.to_utf8(channel)
         return super(PyFiBot, self).leave(channel, key)
 
-    def quit(self, message = ''):
+    def quit(self, message=''):
         message = self._to_utf8(message)
         return super(PyFiBot, self).quit(message)
 
     ### Overrides for twisted.words.irc internal commands ###
     def XXregister(self, nickname, hostname='foo', servername='bar'):
-        nickname   = self._to_utf8(nickname)
-        hostname   = self._to_utf8(hostname)
+        nickname = self._to_utf8(nickname)
+        hostname = self._to_utf8(hostname)
         servername = self._to_utf8(servername)
         return super(PyFiBot, self).register(nickname, hostname, servername)
 
-        self.sendLine("USER %s %s %s :%s" % (self.username, hostname, servername, self.realname))
+        #self.sendLine("USER %s %s %s :%s" % (self.username, hostname, servername, self.realname))
         #self.register(nickname, hostname, servername)
 
     ### LOW-LEVEL IRC HANDLERS ###
@@ -452,6 +520,11 @@ class PyFiBot(irc.IRCClient, CoreCommands):
                 params.append("")
             self.userLeft(prefix, channel, params[1])
 
+    def irc_NICK(self, prefix, params):
+        """override the twisted version to preserve full userhost info"""
+        newnick = params[0]
+        self.userRenamed(prefix, newnick)
+
     def irc_QUIT(self, prefix, params):
         """QUIT-handler.
 
@@ -476,7 +549,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
 
     def noticed(self, user, channel, message):
         """I received a notice"""
-        self._runhandler("noticed", user, channel, message)
+        self._runhandler("noticed", user, channel, self.factory.to_unicode(message))
 
     def modeChanged(self, user, channel, set, modes, args):
         """Mode changed on user or channel"""
@@ -484,7 +557,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
 
     def kickedFrom(self, channel, kicker, message):
         """I was kicked from a channel"""
-        self._runhandler("kickedFrom", channel, kicker, message)
+        self._runhandler("kickedFrom", channel, kicker, self.factory.to_unicode(message))
 
     def nickChanged(self, nick):
         """I changed my nick"""
@@ -497,19 +570,19 @@ class PyFiBot(irc.IRCClient, CoreCommands):
 
     def userLeft(self, user, channel, message):
         """Someone left"""
-        self._runhandler("userLeft", user, channel, message)
+        self._runhandler("userLeft", user, channel, self.factory.to_unicode(message))
 
     def userKicked(self, kickee, channel, kicker, message):
         """Someone got kicked by someone"""
-        self._runhandler("userKicked", kickee, channel, kicker, message)
+        self._runhandler("userKicked", kickee, channel, kicker, self.factory.to_unicode(message))
 
     def action(self, user, channel, data):
         """An action"""
-        self._runhandler("action", user, channel, data)
+        self._runhandler("action", user, channel, self.factory.to_unicode(data))
 
     def topicUpdated(self, user, channel, topic):
         """Save topic to maindb when it changes"""
-        self._runhandler("topicUpdated", user, channel, topic)
+        self._runhandler("topicUpdated", user, channel, self.factory.to_unicode(topic))
 
     def userRenamed(self, oldnick, newnick):
         """Someone changed their nick"""
@@ -517,7 +590,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
 
     def receivedMOTD(self, motd):
         """MOTD"""
-        self._runhandler("receivedMOTD", motd)
+        self._runhandler("receivedMOTD", self.factory.to_unicode(motd))
 
     ## SERVER INFORMATION
 

@@ -9,6 +9,7 @@ pyfibot/modules/module_weather_conf.json
 pyfibot/modules/module_giantbomb_conf.json
 pyfibot/modules/module_seen_users.json
 /.settings
+databases/
 
 #imdbpy
 etc

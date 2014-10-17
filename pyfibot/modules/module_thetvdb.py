@@ -19,11 +19,31 @@ except:
     api_ok = False
 
 
+class SmartUI(tvdb_api.BaseUI):
+    """Returns the latest series that is actually airing"""
+    def selectSeries(self, allSeries):
+        t = tvdb_api.Tvdb()
+        # reverse order, latest shows first(?)
+        for series in reversed(allSeries):
+            # search with ID directly to skip name->ID lookup in library
+            status = t[series['id']].data['status']
+            if status == "Continuing":
+                return series
+        if len(allSeries) > 0:
+            return allSeries[0]
+
+if __name__ == "__main__":
+    api = tvdb_api.Tvdb(custom_ui=SmartUI)
+    print(api['doctor who'])        # Doctor Who 2005
+    print(api['castle'])            # Castle 2009
+    print(api['house of cards'])    # House of Cards (US)
+
+
 def command_ep(bot, user, channel, args):
     """Usage: ep <series name>"""
     if not api_ok:
         return
-    t = tvdb_api.Tvdb()
+    t = tvdb_api.Tvdb(custom_ui=SmartUI)
     now = datetime.now()
     # one day resolution maximum
     now = now.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -34,7 +54,7 @@ def command_ep(bot, user, channel, args):
 
     try:
         series = t[args]
-    except tvdb_exceptions.tvdb_shownotfound:
+    except (TypeError, tvdb_exceptions.tvdb_shownotfound):
         bot.say(channel, "Series '%s' not found" % args)
         return
 
@@ -69,8 +89,8 @@ def command_ep(bot, user, channel, args):
         else:
             airdate = "today"
 
-        season_ep = "%dx%02d" % (int(float(episode['combined_season'])),int(float(episode['combined_episodenumber'])))
-        msg = "Next episode of %s %s '%s' airs %s" % (series.data['seriesname'], season_ep, episode['episodename'], airdate)
+        season_ep = "%dx%02d" % (int(float(episode['combined_season'])), int(float(episode['combined_episodenumber'])))
+        msg = "Next episode of %s %s '%s' airs %s on %s" % (series.data['seriesname'], season_ep, episode['episodename'], airdate, series.data['network'])
     # no future episodes found, show the latest one
     elif all_episodes:
         # find latest episode of the show
@@ -93,8 +113,11 @@ def command_ep(bot, user, channel, args):
         episode_no = int(float(episode['combined_episodenumber']))
 
         season_ep = "%dx%02d" % (season_no, episode_no)
-        msg = "Latest episode of %s %s '%s' aired %s" % (series.data['seriesname'], season_ep, episode['episodename'], airdate)
+        msg = "Latest episode of %s %s '%s' aired %s on %s" % (series.data['seriesname'], season_ep, episode['episodename'], airdate, series.data['network'])
     else:
         msg = "No new or past episode airdates found for %s" % series.data['seriesname']
+
+    if series.data['status'] != "Continuing":
+        msg += " [Ended]"
 
     bot.say(channel, msg.encode("UTF-8"))

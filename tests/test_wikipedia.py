@@ -28,7 +28,7 @@ def test_three():
 def test_four():
     msg = "http://en.wikipedia.org/wiki/Dynamo_(magician)"
     module_urltitle.init(bot)
-    eq_(("#channel", u"Title: Dynamo is an English magician, best known for his fly on the wall documentary show Dynamo: Magician Impossible."), module_urltitle.handle_url(bot, None, "#channel", msg, msg))
+    eq_(("#channel", u"Title: Steven Frayne, commonly known by his stage name \"Dynamo\", is an English magician, best known for his show Dynamo: Magician Impossible."), module_urltitle.handle_url(bot, None, "#channel", msg, msg))
 
 
 def test_five():
@@ -46,7 +46,7 @@ def test_six():
 def test_seven():
     msg = "http://en.wikipedia.org/wiki/Ramon_Llull"
     module_urltitle.init(bot)
-    eq_(("#channel", u"Title: Ramon Llull was a Majorcan writer and philosopher, logician and a Franciscan tertiary."), module_urltitle.handle_url(bot, None, "#channel", msg, msg))
+    eq_(("#channel", u"Title: Ramon Llull, T.O.S.F. was a Majorcan writer and philosopher, logician and a Franciscan tertiary."), module_urltitle.handle_url(bot, None, "#channel", msg, msg))
 
 
 def test_eight():
@@ -59,3 +59,15 @@ def test_nine():
     msg = "http://fi.wikipedia.org/wiki/Kimi_Räikkönen"
     module_urltitle.init(bot)
     eq_(("#channel", u"Title: Kimi-Matias Räikkönen on suomalainen autourheilija ja Formula 1:n maailmanmestari."), module_urltitle.handle_url(bot, None, "#channel", msg, msg))
+
+
+def test_ten():
+    msg = 'http://en.wikipedia.org/wiki/802.11ac'
+    module_urltitle.init(bot)
+    eq_(("#channel", u"Title: IEEE 802.11ac is a wireless networking standard in the 802.11 family, developed in the IEEE Standards Association process, providing high-throughput wireless local area networks on the 5\xa0GHz band."), module_urltitle.handle_url(bot, None, "#channel", msg, msg))
+
+
+def test_eleven():
+    msg = 'http://en.wikipedia.org/wiki/Edison_Arantes_do_Nascimento'
+    module_urltitle.init(bot)
+    eq_(("#channel", u"Title: Edson Arantes do Nascimento, who is better known as Pelé, is a retired Brazilian footballer who is widely regarded to be the best football player of all time."), module_urltitle.handle_url(bot, None, "#channel", msg, msg))
