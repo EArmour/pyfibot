@@ -4,6 +4,7 @@ from twisted.internet import task
 import logging, json, urllib, os, sys, requests
 from threading import Thread
 from bs4 import BeautifulSoup as bs4
+from modules.module_goog import url
 
 log = logging.getLogger('giantbomb')
 t = None
@@ -37,36 +38,48 @@ def handle_privmsg(bot, user, channel, cmd):
                 log.info("Stopping previous scraping thread")
                 getvids_callLater.cancel()
             rotator_getvids(bot, 300)
-    
+
+
 def init(botref):
     global config
     global bot
     bot = botref
     config = bot.config.get("module_urltitle", {})
-    
+
+
 def finalize():
-    if getvids_callLater != None:
+    if getvids_callLater is not None:
         log.info("Stopping previous scraping thread")
         getvids_callLater.cancel()
-    
+
+
 def command_gb(bot, user, channel, args):
     """.gb [ql|feature|sub|article|review|bombastica] - Returns the latest item on Giant Bomb on that type"""
     global videos
     if args:
         subcommand = args.split()[0]
-        if (subcommand == "ql"):
+        if subcommand == "ql":
             bot.say(channel, "Latest QL: %s" % videos['ql'])
-        elif (subcommand == "feature"):
+        elif subcommand == "feature":
             bot.say(channel, "Latest Feature: %s" % videos['feature'])
-        elif (subcommand == "sub"):
+        elif subcommand == "sub":
             bot.say(channel, "Latest Subscriber Content: %s" % videos['sub'])
-        elif (subcommand == "article"):
+        elif subcommand == "article":
             bot.say(channel, "Latest Article: %s" % videos['article'])
-        elif (subcommand == "review"):
+        elif subcommand == "review":
             bot.say(channel, "Latest Review: %s" % videos['review'])
-        elif (subcommand == "bombastica"):
+        elif subcommand == "bombastica":
             bot.say(channel, "Latest Bombastica: %s" % videos['bombastica'])
-    
+        elif subcommand == "upcoming":
+            page = bs4(urllib.urlopen("http://www.giantbomb.com/"))
+            upcoming = page.find(class_="promo-upcoming")
+            slots = upcoming.find_all("dd")
+            for slot in slots:
+                text = slot.find("h4").text
+                time = slot.find("p").text
+                bot.say(channel, "%s - %s" % (text, time))
+
+
 def getvids(bot):
     """This function is launched from rotator to collect and announce new items from feeds to channel"""
     global videos
@@ -201,6 +214,7 @@ def getvids(bot):
             json.dump(videos, datafile)
 #     else:
 #         log.info("No changes found")
+
 
 def rotator_getvids(bot, delay):
     """Timer for methods/functions"""

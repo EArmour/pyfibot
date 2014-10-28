@@ -180,7 +180,7 @@ def command_cache(bot, user, channel, args):
 def handle_url(bot, user, channel, url, msg):
     """Handle urls"""
 
-    if msg.startswith("-"):
+    if msg[msg.find(url) - 1] == '-':
         return
     if re.match("(http:\/\/open.spotify.com\/|spotify:)(album|artist|track)([:\/])([a-zA-Z0-9]+)\/?", url):
         return  # spotify handled elsewhere
@@ -229,56 +229,6 @@ def handle_url(bot, user, channel, url, msg):
             else:
                 # No specific handler, use generic (BUT DON'T)
                 return
-
-    log.debug("No specific handler found, using generic")
-    # Fall back to generic handler
-    bs = __get_bs(url)
-    if not bs:
-        log.debug("No BS available, returning")
-        return
-
-    # Try and get title meant for social media first, it's usually fairly accurate
-    title = bs.find('meta', {'property': 'og:title'})
-    if not title:
-        title = bs.find('title')
-        # no title attribute
-        if not title:
-            log.debug("No title found, returning")
-            return
-        title = title.text
-    else:
-        title = title['content']
-
-    try:
-        # remove trailing spaces, newlines, linefeeds and tabs
-        title = title.strip()
-        title = title.replace("\n", " ")
-        title = title.replace("\r", " ")
-        title = title.replace("\t", " ")
-
-        # compress multiple spaces into one
-        title = re.sub("[ ]{2,}", " ", title)
-
-        # nothing left in title (only spaces, newlines and linefeeds)
-        if not title:
-            return
-
-        # Cache generic titles
-        cache.put(url, title)
-
-        if config.get("check_redundant", True) and _check_redundant(url, title):
-            log.debug("%s is redundant, not displaying" % title)
-            return
-
-        ignored_titles = ['404 Not Found', '403 Forbidden']
-        if title in ignored_titles:
-            return
-        else:
-            return _title(bot, channel, title)
-
-    except AttributeError:
-        # TODO: Nees a better way to handle this. Happens with empty <title> tags
-        pass
 
 
 def _title(bot, channel, title, smart=False):
