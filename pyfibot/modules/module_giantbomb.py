@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
-from twisted.internet import reactor
-from twisted.internet import task
-import logging, json, urllib, os, sys, requests
+import logging
+import json
+import urllib
+import os
+import sys
 from threading import Thread
+
+from twisted.internet import reactor
+import requests
 from bs4 import BeautifulSoup as bs4
-from modules.module_goog import url
+
 
 log = logging.getLogger('giantbomb')
 t = None

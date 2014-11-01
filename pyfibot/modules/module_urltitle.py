@@ -367,17 +367,25 @@ def _handle_youtube_gdata(url):
 
         return "YouTube: %s [by %s | %s]" % (title, author, "".join(lengthstr))
 
+
 def _handle_steamgame(url):
     """http://store.steampowered.com/app/*"""
-    log.info("Handling Steam game!")
     bs = __get_bs(url)
     
     title = bs.find(itemprop="name").text.strip()
-    price = bs.find(itemprop="price")['content']
-    # price = bs.find("div", {'class': 'discount_final_price'}).text.strip()
-    reception = bs.find("span", {'class': 'game_review_summary'}).text.strip().lower()
 
-    return "Steam: %s -- $%s (Generally %s reviews)" % (title, price, reception)
+    try:
+        price = bs.find(itemprop="price")['content']
+        reception = bs.find("span", {'class': 'game_review_summary'}).text.strip().lower()
+        return "Steam: %s -- $%s (Generally %s reviews)" % (title, price, reception)
+    except AttributeError:  # Pre-release game
+        releasedate = bs.find("div", {'class': 'game_area_comingsoon'}).find("h1").text.strip()
+        try:
+            price = bs.find(itemprop="price")['content']
+            return "Steam: %s -- $%s (%s)" % (title, price, releasedate)
+        except AttributeError:
+            return "Steam: %s -- %s" % (title, releasedate)
+
 
 def _handle_steamsharedfile(url):
     """http://steamcommunity.com/sharedfiles/filedetails/?id=*"""
