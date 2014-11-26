@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 import logging, json, os, sys
-from datetime import datetime
 from util import getnick
 
 log = logging.getLogger('tell')
 tells = []
+
 
 def init(bot):
     global tells
 
     with open(os.path.join(sys.path[0], 'modules', 'module_tell_messages.json')) as tellfile:
         tells = json.load(tellfile)
+
 
 def command_tell(bot, user, channel, args):
     """.tell [nick] [message] - Instructs the bot to relay a message to a user when they next join the channel"""
@@ -35,10 +36,6 @@ def command_tell(bot, user, channel, args):
         json.dump(tells, tellfile, indent=2)
 
 
-def command_ptest(bot, user, channel, args):
-    bot.say(channel, bot.who)
-
-
 def handle_userJoined(bot, user, channel):
     check_messages(bot, user)
 
@@ -52,7 +49,7 @@ def check_messages(bot, user):
     nick = getnick.get(user).lower()
 
     found = False
-    for i, tell in enumerate(tells):
+    for tell in tells:
         if tell["to"].lower() == nick:
             bot.say(str(tell["channel"]), "%s: Hey, %s says: %s" % (tell["to"], tell["from"], tell["message"]))
             tells.remove(tell)

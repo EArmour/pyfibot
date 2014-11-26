@@ -20,16 +20,16 @@ config = None
 
 def event_signedon(bot):
     global getvids_callLater, videos
-    
+
     with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json')) as datafile:
         videos = json.load(datafile)
     log.info("Loaded cached video names")
-    
+
     if getvids_callLater != None:
         log.info("Stopping previous scraping thread")
         getvids_callLater.cancel()
     rotator_getvids(bot, 300)
-    
+
 def handle_privmsg(bot, user, channel, cmd):
     global videos
     msg = cmd[1:]
@@ -59,7 +59,7 @@ def finalize():
 
 
 def command_gb(bot, user, channel, args):
-    """.gb [ql|feature|sub|article|review|bombastica] - Returns the latest item on Giant Bomb on that type"""
+    """.gb upcoming - Returns any posted upcoming items at GiantBomb.com (it's a website about video games)"""
     global videos
     if args:
         subcommand = args.split()[0]
@@ -77,18 +77,22 @@ def command_gb(bot, user, channel, args):
             bot.say(channel, "Latest Bombastica: %s" % videos['bombastica'])
         elif subcommand == "upcoming":
             page = bs4(urllib.urlopen("http://www.giantbomb.com/"))
-            upcoming = page.find(class_="promo-upcoming")
+            upcoming = page.find("dl", {"class": "promo-upcoming"})
             slots = upcoming.find_all("dd")
-            for slot in slots:
-                text = slot.find("h4").text
-                time = slot.find("p").text
-                bot.say(channel, "%s - %s" % (text, time))
+            if len(slots) == 0:
+                bot.say(channel, "No items on the upcoming list! Alert @GiantBombStats!")
+            else:
+                bot.say(channel, "%d Upcoming Items (times in EST):" % len(slots))
+                for slot in slots:
+                    text = slot.find("h4").text
+                    time = slot.find("p").text
+                    bot.say(channel, "%s - %s" % (text, time))
 
 
 def getvids(bot):
     """This function is launched from rotator to collect and announce new items from feeds to channel"""
     global videos
-    
+
     change = False
     channel = "#giantbomb"
 
@@ -102,7 +106,7 @@ def getvids(bot):
         log.info("New Quick Look: %s" % latestname)
         videos['ql'] = latestname
         change = True
-        
+
     page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/subscriber/"))
     name = page.find(class_ = "title")
     latestname = name.string
@@ -113,7 +117,7 @@ def getvids(bot):
         log.info("New Sub Video: %s" % latestname)
         videos['sub'] = latestname
         change = True
-        
+
     page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/features/"))
     name = page.find(class_ = "title")
     latestname = name.string
@@ -137,14 +141,15 @@ def getvids(bot):
         change = True
 
     page = bs4(urllib.urlopen("http://www.giantbomb.com/reviews/"))
-    latestname = page.find(class_ = "title").string
+    titletag = page.find(class_ = "title")
+    latestname = titletag.string
     if not latestname == videos['review']:
         deck = page.find(class_ = "deck")
         byline = page.find(class_ = "byline").string
         author = byline[byline.index("by") + 3:]
         latestdesc = deck.string
         link = deck.parent['href']
-        scorespan = page.find(class_ = "score")
+        scorespan = titletag.findNextSibling()
         scoreclass = scorespan['class'][2]
         score = scoreclass[scoreclass.find('-')+1:]
         bot.say(channel, "[New %s-Star Review by %s] %s - %s http://www.giantbomb.com%s" % (score, author, latestname,
@@ -152,7 +157,7 @@ def getvids(bot):
         log.info("New Review: %s" % latestname)
         videos['review'] = latestname
         change = True
-        
+
     page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/encyclopedia-bombastica/"))
     name = page.find(class_ = "title")
     latestname = name.string
@@ -190,7 +195,7 @@ def getvids(bot):
     bearer = config.get('twitter_bearer')
     data = bot.get_url(livetwitter,headers={'Authorization':'Bearer ' + bearer})
     parsed = data.json()
-    
+
     latesttweet = parsed[0]['id']
     if not latesttweet == videos['tweet']:
         text = parsed[0]['text']

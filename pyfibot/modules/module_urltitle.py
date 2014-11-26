@@ -378,12 +378,12 @@ def _handle_steamgame(url):
         price = bs.find(itemprop="price")['content']
         reception = bs.find("span", {'class': 'game_review_summary'}).text.strip().lower()
         return "Steam: %s -- $%s (Generally %s reviews)" % (title, price, reception)
-    except AttributeError:  # Pre-release game
+    except (AttributeError, TypeError):  # Pre-release game
         releasedate = bs.find("div", {'class': 'game_area_comingsoon'}).find("h1").text.strip()
         try:
             price = bs.find(itemprop="price")['content']
             return "Steam: %s -- $%s (%s)" % (title, price, releasedate)
-        except AttributeError:
+        except (AttributeError, TypeError):
             return "Steam: %s -- %s" % (title, releasedate)
 
 
@@ -500,190 +500,6 @@ def _handle_stackoverflow(url):
     except Exception, e:
         log.debug("Json parsing failed %s" % e)
         return
-
-
-def _handle_reddit(url):
-    """*reddit.com/r/*/comments/*/*"""
-    if url[-1] != "/":
-        ending = "/.json"
-    else:
-        ending = ".json"
-    json_url = url + ending
-    content = bot.get_url(json_url)
-    if not content:
-        log.debug("No content received")
-        return
-    try:
-        data = content.json()[0]['data']['children'][0]['data']
-        title = data['title']
-        ups = data['ups']
-        downs = data['downs']
-        score = ups - downs
-        num_comments = data['num_comments']
-        over_18 = data['over_18']
-        result = "%s - %dpts (%d ups, %d downs) - %d comments" % (title, score, ups, downs, num_comments)
-        if over_18 is True:
-            result = result + " (NSFW)"
-        return result
-    except:
-        # parsing error, use default title
-        return
-
-
-def _handle_aamulehti(url):
-    """http://www.aamulehti.fi/*"""
-    bs = __get_bs(url)
-    if not bs:
-        return
-    title = bs.find("h1").string
-    return title
-
-
-def _handle_areena(url):
-    """http://areena.yle.fi/*"""
-    def areena_get_exit_str(text):
-        dt = datetime.strptime(text, '%Y-%m-%dT%H:%M:%S') - datetime.now()
-        if dt.days > 7:
-            return u'%i weeks' % (dt.days / 7)
-        if dt.days >= 1:
-            return u'%i days' % (dt.days)
-        if dt.seconds >= 3600:
-            return u'%i hours' % (dt.seconds / 3600)
-        return u'%i minutes' % (dt.seconds / 60)
-
-    splitted = url.split('/')
-    # if "suora" found in url (and in the correct place),
-    # needs a bit more special handling as no api is available
-    if len(splitted) > 4 and splitted[4] == 'suora':
-        bs = __get_bs(url)
-        try:
-            container = bs.find('section', {'class': 'simulcast'})
-        except:
-            return
-        channel = container.find('a', {'class': 'active'}).text.strip()
-        return '%s (LIVE)' % (channel)
-
-    # create json_url from original url
-    json_url = '%s.json' % url.split('?')[0]
-    r = bot.get_url(json_url)
-
-    try:
-        data = r.json()
-    except:
-        log.debug("Couldn't parse JSON.")
-        return
-
-    try:
-        content_type = data['contentType']
-    except KeyError:
-        # there's no clear identifier for series
-        if 'episodeCountTotal' in data:
-            content_type = 'SERIES'
-        else:
-            # assume EPISODE
-            content_type = 'EPISODE'
-
-    try:
-        if content_type in ['EPISODE', 'CLIP', 'PROGRAM']:
-            # sometimes there's a ": " in front of the name for some reason...
-            name = data['reportingTitle'].lstrip(': ')
-            duration = __get_length_str(data['durationSec'])
-            broadcasted = __get_age_str(datetime.strptime(data['published'], '%Y-%m-%dT%H:%M:%S'))
-            if data['expires']:
-                expires = ' - exits in %s' % areena_get_exit_str(data['expires'])
-            else:
-                expires = ''
-            play_count = __get_views(data['playCount'])
-            return '%s [%s - %s plays - %s%s]' % (name, duration, play_count, broadcasted, expires)
-
-        elif content_type == 'SERIES':
-            name = data['name']
-            episodes = data['episodeCountViewable']
-            latest_episode = __get_age_str(datetime.strptime(data['previousEpisode']['published'], '%Y-%m-%dT%H:%M:%S'))
-            return '%s [SERIES - %d episodes - latest episode: %s]' % (name, episodes, latest_episode)
-    except:
-        # We want to exit cleanly, so it falls back to default url handler
-        log.debug('Unhandled error in Areena.')
-        return
-
-
-def _handle_wikipedia(url):
-    """*wikipedia.org*"""
-
-    def clean_page_name(url):
-        # select part after '/' as article and unquote it (replace stuff like %20) and decode to unicode
-        page = bot.to_unicode(urlparse.unquote(url.split('/')[-1]))
-        if page.startswith('index.php') and 'title' in page:
-            page = page.split('?title=')[1]
-        return page
-
-    def get_content(url):
-        params = {
-            'format': 'json',
-            'action': 'query',
-            'prop': 'extracts',
-            # request 5 sentences, because Wikipedia seems to think that
-            # period is always indicative of end of sentence
-            'exsentences': 5,
-            'redirects': '',
-            'titles': clean_page_name(url)
-        }
-
-        language = url.split('/')[2].split('.')[0]
-        api = "http://%s.wikipedia.org/w/api.php" % (language)
-
-        r = bot.get_url(api, params=params)
-
-        try:
-            content = r.json()['query']['pages'].values()[0]['extract']
-            content = BeautifulSoup(content).get_text()
-        except KeyError:
-            return
-        return content
-
-    content = get_content(url)
-    if not content:
-        return
-
-    # Remove all annotations to make splitting easier
-    content = re.sub(r'\[.*?\]', '', content)
-    # Cleanup brackets (usually includes useless information to
-    # IRC)
-    content = re.sub(r'\(.*?\)', '', content)
-    # Remove " , ", which might be left behind after cleaning up
-    # the brackets
-    content = content.replace(' , ', ', ')
-    # Remove multiple spaces
-    content = re.sub(' +', ' ', content)
-
-    # Define sentence break as something ending in a period and starting with a capital letter,
-    # with a whitespace or newline in between
-    sentences = re.split('\.\s[A-ZÅÄÖ]', content)
-    # Remove empty values from list.
-    sentences = filter(None, sentences)
-
-    if not sentences:
-        return
-
-    first_sentence = sentences[0]
-    # After regex splitting, the dot shold be removed, add it.
-    if first_sentence[-1] != '.':
-        first_sentence += '.'
-
-    length_threshold = 450
-    if len(first_sentence) <= length_threshold:
-        return first_sentence
-
-    # go through the first sentence from threshold to end
-    # and find either a space or dot to cut to.
-    for i in range(length_threshold, len(first_sentence)):
-        char = first_sentence[i]
-        if char == ' ' or char == '.':
-            # if dot was found, the sentence probably ended, so no need to print "..."
-            if char == '.':
-                return first_sentence[:i + 1]
-            # if we ended up on a space, print "..."
-            return first_sentence[:i + 1] + '...'
 
 
 def _handle_imgur(url):
@@ -1017,94 +833,6 @@ def _handle_instagram(url):
         return "%s [%d likes, %d comments]" % (user, media.like_count, media.comment_count)
 
 
-def fetch_nettiX(url, fields_to_fetch):
-    '''
-    Creates a title for NettiX -services.
-    Uses the mobile site, so at the moment of writing fetching data from
-    NettiAsunto and NettiMökki isn't possible.
-
-    All handlers must be implemented elsewhere, this only provides a constant
-    function to fetch the data (and creates an uniform title).
-    '''
-
-    # Strip useless stuff from url
-    site = re.split('https?\:\/\/(www.)?(m.)?', url)[-1]
-    # Fetch BS from mobile site, as it's a lot easier to parse
-    bs = __get_bs('http://m.%s' % site)
-    if not bs:
-        return
-
-    # Find "main name" for the item
-    try:
-        main = bs.find('div', {'class': 'fl'}).find('b').text.strip()
-    except AttributeError:
-        # If not found, probably doesn't work -> fallback to default
-        return
-    if not main:
-        return
-
-    fields = []
-
-    try:
-        # Try to find price for the item, if found -> add to fields
-        price = bs.find('div', {'class': 'pl10 mt10 lnht22'}).find('span').text.strip()
-        if price:
-            fields.append(price)
-    except AttributeError:
-        pass
-
-    # All sites have the same basic structure, find the "data" table
-    ad_info = bs.find('div', {'class': 'ad_info'})
-    if ad_info:
-        for f in ad_info.findAll('li'):
-            # Get field name
-            field = f.text.split(':')[0]
-            # If the name was found and it's in fields_to_fetch
-            if field and field in fields_to_fetch:
-                # Remove spans
-                # For example cars might have registeration date includet in a span
-                [s.extract() for s in f.findAll('span')]
-                # The "main data" is always in a "b" element
-                field_info = f.find('b').text.strip()
-                # If the data was found and it's not "Ei ilmoitettu", add to fields
-                if field_info and field_info != 'Ei ilmoitettu':
-                    fields.append(field_info)
-
-    if fields:
-        return '%s [%s]' % (main, ', '.join(fields))
-    return '%s' % (main)
-
-
-def _handle_nettiauto(url):
-    """http*://*nettiauto.com/*/*/*"""
-    return fetch_nettiX(url, ['Vuosimalli', 'Mittarilukema', 'Moottori', 'Vaihteisto', 'Vetotapa'])
-
-
-def _handle_nettivene(url):
-    """http*://*nettivene.com/*/*/*"""
-    return fetch_nettiX(url, ['Vuosimalli', 'Runkomateriaali', 'Pituus', 'Leveys'])
-
-
-def _handle_nettimoto(url):
-    """http*://*nettimoto.com/*/*/*"""
-    return fetch_nettiX(url, ['Vuosimalli', 'Moottorin tilavuus', 'Mittarilukema', 'Tyyppi'])
-
-
-def _handle_nettikaravaani(url):
-    """http*://*nettikaravaani.com/*/*/*"""
-    return fetch_nettiX(url, ['Vm./Rek. vuosi', 'Mittarilukema', 'Moottori', 'Vetotapa'])
-
-
-def _handle_nettivaraosa(url):
-    """http*://*nettivaraosa.com/*/*"""
-    return fetch_nettiX(url, ['Varaosan osasto'])
-
-
-def _handle_nettikone(url):
-    """http*://*nettikone.com/*/*/*"""
-    return fetch_nettiX(url, ['Vuosimalli', 'Osasto', 'Moottorin tilavuus', 'Mittarilukema', 'Polttoaine'])
-
-
 def _handle_hitbox(url):
     """http*://*hitbox.tv/*"""
 
@@ -1147,19 +875,6 @@ def _handle_hitbox(url):
         return False
 
 
-def _handle_poliisi(url):
-    """http*://*poliisi.fi/poliisi/*"""
-    bs = __get_bs(url)
-    # If there's no BS, the default handler can't get it either...
-    if not bs:
-        return False
-
-    try:
-        return bs.find('div', {'id': 'contentbody'}).find('h1').text.strip()
-    except AttributeError:
-        return False
-
-
 def _handle_google_play_music(url):
     """http*://play.google.com/music/*"""
     bs = __get_bs(url)
@@ -1190,24 +905,3 @@ def _handle_github(url):
 def _handle_gitio(url):
     """http*://git.io*"""
     return __get_title_tag(url)
-
-
-# IGNORED TITLES
-def _handle_salakuunneltua(url):
-    """*salakuunneltua.fi*"""
-    return False
-
-
-def _handle_apina(url):
-    """http://apina.biz/*"""
-    return False
-
-
-def _handle_travis(url):
-    """http*://travis-ci.org/*"""
-    return False
-
-
-def _handle_ubuntupaste(url):
-    """http*://paste.ubuntu.com/*"""
-    return False
