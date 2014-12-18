@@ -62,7 +62,8 @@ def command_gb(bot, user, channel, args):
     """.gb upcoming - Returns any posted upcoming items at GiantBomb.com (it's a website about video games)"""
     global videos
     if args:
-        subcommand = args.split()[0]
+        cmds = args.split()
+        subcommand = cmds[0]
         if subcommand == "ql":
             bot.say(channel, "Latest QL: %s" % videos['ql'])
         elif subcommand == "feature":
@@ -82,6 +83,10 @@ def command_gb(bot, user, channel, args):
             if len(slots) == 0:
                 bot.say(channel, "No items on the upcoming list! Alert @GiantBombStats!")
             else:
+                if len(cmds) > 1 and cmds[1] == "nopat":
+                    before = len(slots)
+                    slots = [slot for slot in slots if not str(slot.find("h4").text).__contains__("Scoops")]
+                    bot.say(channel, "NOPAT MODE ACTIVATED - %s ITEMS ELIMINATED" % (before - len(slots)))
                 bot.say(channel, "%d Upcoming Items (times in EST):" % len(slots))
                 for slot in slots:
                     text = slot.find("h4").text
@@ -218,6 +223,16 @@ def getvids(bot):
     elif videos['mixlrlive'] and not live:
         videos['mixlrlive'] = False
         change=True
+
+    page = bs4(urllib.urlopen("http://www.giantbomb.com/podcasts/"))
+    name = page.find("h2")
+    latestname = name.string
+    if not latestname == videos['bombcast']:
+        latestdesc = page.find(class_="deck").string.strip()
+        bot.say(channel, "[New Bombcast] %s - %s" % (latestname, latestdesc))
+        log.info("New Bombcast: %s" % latestname)
+        videos['bombcast'] = latestname
+        change = True
 
     if change:
         with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json'),'w') as datafile:
