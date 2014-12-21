@@ -7,7 +7,7 @@ def command_how(bot, user, channel, args):
     """".how (times) - Gives you random instructions from wikiHow, by default 3 steps"""
     if args:
         try:
-            times = args if int(args) < 11 else 3
+            times = int(args) if int(args) < 11 else 3
         except:
             times = 3
     else:
