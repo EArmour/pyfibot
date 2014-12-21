@@ -4,8 +4,12 @@ from bs4 import BeautifulSoup as bs4
 import re, random, requests
 
 def command_how(bot, user, channel, args):
+    """".how (times) - Gives you random instructions from wikiHow, by default 3 steps"""
     if args:
-        times = int(args)
+        try:
+            times = args if int(args) < 11 else 3
+        except:
+            times = 3
     else:
         times = 3
 
@@ -30,9 +34,8 @@ def command_how(bot, user, channel, args):
                 except:
                     break
 
-        # Add a randomly-selected step to the array and set it's list number to the appropriate one
-        steps[i] = re.sub(r'"step_num">\d+', '"step_num">%d' % (i + 1), str(allsteps[random.randint(0, len(allsteps) -
-                                                                                                1)]).decode('utf-8'))
+        steps[i] =  str(allsteps[random.randint(0, len(allsteps) - 1)]).decode('utf-8')
+
     for i, step in enumerate(steps):
         step = bs4(step)
         boldtag = step.find("b", {"class": "whb"})
