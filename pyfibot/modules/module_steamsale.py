@@ -52,10 +52,8 @@ def command_price(bot, user, channel, args):
 def command_flashdeals(bot, user, channel, args):
     """.flashdeals - Finds current Steam sale Flash Deals and displays prices (might need to be manually updated for new sales, ping me)"""
     store = bs4(urllib.urlopen(storeurl))
-     
-    flashes = store.find(class_ = "flashdeals_row")
-    links = flashes.find_all('a')
-      
+    links = store.find_all('a', class_ = "HeaderV5")
+
 #     script = store.find_all('script')
 #     endunix = script[11].string[143:153]
 #     countdown = int(endunix) - int(time.time())
@@ -65,14 +63,15 @@ def command_flashdeals(bot, user, channel, args):
 
 #     bot.say(channel, "There's no Steam sale on, silly!")
 
-    for flash in links:       
+    for flash in links:
         gname = get_name(flash)
         gprice = get_price(flash)
         bot.say(channel, "%s - %s" % (gname, gprice))
         
 def get_name(flash):
-    gameid = flash['href'][34:40]
-    gameid = gameid.strip("/")
+    # gameid = flash['href'][34:40]
+    # gameid = gameid.strip("/")
+    gameid = flash['data-ds-appid']
     r = requests.get('http://store.steampowered.com/apphoverpublic/%s?l=english' % gameid)
     hover = bs4("<html><head><title>Work</title></head><body>" + r.text + "</body></html>")
     name = hover.find('h4').string
@@ -83,4 +82,3 @@ def get_price(flash):
     price = flash.find(class_ = "discount_final_price").string
     
     return price
-    
