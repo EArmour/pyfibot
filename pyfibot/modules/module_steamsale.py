@@ -51,22 +51,15 @@ def command_price(bot, user, channel, args):
 
 def command_flashdeals(bot, user, channel, args):
     """.flashdeals - Finds current Steam sale Flash Deals and displays prices (might need to be manually updated for new sales, ping me)"""
-    store = bs4(urllib.urlopen(storeurl))
-    links = store.find_all('a', class_ = "HeaderV5")
+    bot.say(channel, "There's no Steam sale on at the moment!")
 
-#     script = store.find_all('script')
-#     endunix = script[11].string[143:153]
-#     countdown = int(endunix) - int(time.time())
-#     timer = time.strftime('%H:%M:%S', time.gmtime(countdown))
-    
-#     bot.say(channel, "Current FLASH DEALS (%s remaining):" % timer)
-
-#     bot.say(channel, "There's no Steam sale on, silly!")
-
-    for flash in links:
-        gname = get_name(flash)
-        gprice = get_price(flash)
-        bot.say(channel, "%s - %s" % (gname, gprice))
+    # store = bs4(urllib.urlopen(storeurl))
+    # links = store.find_all('a', class_ = "HeaderV5")
+    #
+    # for flash in links:
+    #     gname = get_name(flash)
+    #     gprice = get_price(flash)
+    #     bot.say(channel, "%s - %s" % (gname, gprice))
         
 def get_name(flash):
     # gameid = flash['href'][34:40]

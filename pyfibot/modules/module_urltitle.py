@@ -897,8 +897,8 @@ def _handle_github(url):
     if not bs:
         return False
 
-    repo = bs.find('a', {'class': 'js-repo-home-link'}).text.strip()
-    desc = bs.find('div', {'class': 'repository-description'}).find('p').text.strip()
+    repo = bs.find('a', {'class': 'js-current-repository'}).text.strip()
+    desc = bs.find('div', {'class': 'repository-description'}).text.strip()
     return "GitHub: %s - %s" % (repo, desc)
 
 

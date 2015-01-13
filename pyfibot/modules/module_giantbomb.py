@@ -83,10 +83,6 @@ def command_gb(bot, user, channel, args):
             if len(slots) == 0:
                 bot.say(channel, "No items on the upcoming list! Alert @GiantBombStats!")
             else:
-                if len(cmds) > 1 and cmds[1] == "nopat":
-                    before = len(slots)
-                    slots = [slot for slot in slots if not str(slot.find("h4").text).__contains__("Scoops")]
-                    bot.say(channel, "NOPAT MODE ACTIVATED - %s ITEMS ELIMINATED" % (before - len(slots)))
                 bot.say(channel, "%d Upcoming Items (times in EST):" % len(slots))
                 for slot in slots:
                     text = slot.find("h4").text
