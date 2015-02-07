@@ -9,3 +9,5 @@ log = logging.getLogger('testing')
 #     pass
 #     nick = getnick.get(user)
 #     bot.say(channel, "Hey, %s, I like the new topic!: %s" % (nick, topic))
+
+

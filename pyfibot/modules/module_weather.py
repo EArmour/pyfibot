@@ -20,7 +20,8 @@ def init(bot):
         defaultsLower = {key.lower():value for key,value in defaults.items()}
 
 def command_weather(bot, user, channel, args):
-    """.weather [set] (location) - Gets weather from Weather Underground (Can store per-user defaults). Also .fullweather, .forecast"""
+    """.weather [set] (location) - Gets weather from Weather Underground (Can store per-user defaults). Also
+    .fullweather, .forecast, .records"""
     global defaults, defaultsLower
     nick = getnick.get(user)
     
@@ -31,7 +32,7 @@ def command_weather(bot, user, channel, args):
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
     
     splut = args.split(' ', 1)
-    cmd = splut[0].lower();
+    cmd = splut[0].lower()
     if cmd == "set":
         set_weather_default(bot, nick, channel, splut[1])
     elif cmd in defaultsLower:
@@ -100,7 +101,7 @@ def command_forecast(bot, user, channel, args):
 
     if hour > 20: #After 8pm, start with tomorrow day
         start = 2
-    elif hour > 14: #After 2pm, before 8pm, show tonight and tomorrow day
+    elif hour > 14: #After 2pm, until 8pm, show tonight and tomorrow day
         start = 1
     else: #Before 2pm, show today and tonight
         start = 0
@@ -139,17 +140,29 @@ def command_records(bot, user, channel, args):
     lowTemp = lowInfo['record']['F']
     highYear = highInfo['recordyear']
     lowYear = lowInfo['recordyear']
-    
+
+    temp = parsed['current_observation']['temp_f']
+
     degree_sign = u'\N{DEGREE SIGN}'
-    bot.say(channel, "Today at %s: Highest %s (%s), Lowest %s (%s)" % (airport, str(highTemp) + degree_sign + 'F', highYear, str(lowTemp) + degree_sign + 'F', lowYear))
+    bot.say(channel, "Today at %s: Highest %s (%s), Lowest %s (%s) - Currently %s" % (airport, str(highTemp) +
+                                                                                      degree_sign + 'F',
+                                                                        highYear, str(lowTemp) + degree_sign + 'F',
+                                                                        lowYear, str(temp) + degree_sign + 'F'))
     
 def command_time(bot, user, channel, args):
     """.time (location) - Gets the current time and time zone of a location"""
-    
+    global defaults, defaultsLower
+    nick = getnick.get(user)
+
     if not args:
-        return bot.say(channel,"No location specified! I hope you already know what time it is where you are.")
+        if nick in defaults:
+            parsed = get_weather(bot, nick, channel, defaults[nick], False)
+        else:
+            return bot.say(channel,"No location specified! I hope you already know what time it is where you are.")
+    elif args in defaultsLower:
+        parsed = get_weather(bot, nick, channel, defaultsLower[args], False)
     else:
-        parsed = get_weather(bot, user, channel, args, False)
+        parsed = get_weather(bot, nick, channel, args, False)
         
     try:
         info = parsed['current_observation']

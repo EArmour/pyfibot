@@ -13,6 +13,14 @@ def init(bot):
         tells = json.load(tellfile)
 
 
+def command_say(bot, user, channel, args):
+    if isAdmin(user):
+        splut = args.split(' ', 1)
+        chan = splut[0]
+        if not chan[0] == '#':
+            chan = "#" + chan
+        bot.say(chan, splut[1])
+
 def command_tell(bot, user, channel, args):
     """.tell [nick] [message] - Instructs the bot to relay a message to a user when they next join the channel"""
     global tells

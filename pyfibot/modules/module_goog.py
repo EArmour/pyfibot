@@ -36,11 +36,9 @@ def command_goog(bot, user, channel, args):
     if results == '0':
         return bot.say(channel, "Google found nothing for query: %s" % query)
         
-#     time = parsed['searchInformation']['formattedSearchTime']
     firstURL = parsed['items'][0]['link']
     title = parsed['items'][0]['title']
     
     bot.say(channel, "Google: %s - %s" % (title, firstURL))
-    
-#     module_urltitle.init(bot.factory)
-#     module_urltitle.handle_url(bot, user, channel, firstURL, args)
+
+    bot._runhandler("url", user, channel, firstURL, args)

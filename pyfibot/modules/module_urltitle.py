@@ -89,13 +89,16 @@ def recurse(bot, user, title, channel):
     if user is "":
         recursecount = recursecount + 1
         if recursecount == 3:
-            bot.say(channel, "Infinite (or just annoyingly long) recursion detected; aborting!")
+            log.debug("Infinite (or just annoyingly long) recursion detected; aborting!")
             return
     else:
         recursecount = 0
+
+    log.info("In here with " + title)
     
     urls = pyfiurl.grab(title.encode("UTF-8"))
     if urls:
+        log.info(urls)
         user = ""
         for url in urls:
             if url in norepeat:
@@ -106,7 +109,6 @@ def recurse(bot, user, title, channel):
             handle_url(bot, user, channel, url, msg)
     else:
         norepeat = []
-    return None
 
 
 def __get_title_tag(url):
@@ -219,13 +221,11 @@ def handle_url(bot, user, channel, url, msg):
             if title is False:
                 log.debug("Title disabled by handler.")
                 return
-            elif title is None:
-                # Handler found, but suggests using the default title instead
-                break
             elif title:
                 cache.put(url, title)
                 # handler found, abort
-                return _title(bot, channel, title, True)
+                _title(bot, channel, title, True)
+                recurse(bot, user, title, channel)
             else:
                 # No specific handler, use generic (BUT DON'T)
                 return
@@ -313,7 +313,7 @@ def _handle_youtube_gdata(url):
     # Fetches everything the api knows about the video
     #gdata_url = "http://gdata.youtube.com/feeds/api/videos/%s"
     # This fetches everything that is needed by the handle, using partial response.
-    gdata_url = gdata_url = "http://gdata.youtube.com/feeds/api/videos/%s"
+    gdata_url = "http://gdata.youtube.com/feeds/api/videos/%s"
 
     match = re.match("https?://youtu.be/(.*)", url)
     if not match:
@@ -660,7 +660,7 @@ def _handle_dailymotion(url):
         return
 
 def _handle_beeradvocate(url):
-    '''http://beeradvocate.com/beer/profile/*'''
+    '''http://*.beeradvocate.com/beer/profile/*'''
     bs = __get_bs(url)
     
     head = bs.find(class_ = "titleBar").h1.text.split('-')
