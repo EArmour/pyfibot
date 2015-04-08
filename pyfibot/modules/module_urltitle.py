@@ -855,7 +855,7 @@ def _handle_hitbox(url):
             data = r.json()
         except:
             log.debug('can\'t parse, probably wrong stream name')
-            return 'Stream not found.'
+            return False
 
         hitboxname = data['livestream'][0]['media_display_name']
         streamtitle = data['livestream'][0]['media_status']

@@ -9,7 +9,9 @@ from threading import Thread
 from twisted.internet import reactor
 import requests
 from bs4 import BeautifulSoup as bs4
+from soupy import Soupy, Q
 
+requests.packages.urllib3.disable_warnings()
 
 log = logging.getLogger('giantbomb')
 t = None
@@ -17,6 +19,13 @@ videos = {}
 getvids_callLater = None
 bot = None
 config = None
+
+CODE_NAMES = {'ql': 'Quick Look', 'sub': 'Premium Video', 'feature': 'Feature', 'bombastica': 'Encyclopedia Bombastica',
+                'event': 'Event Video', 'unfinished': 'Unfinished'}
+CODE_URLS = {'ql': 'http://www.giantbomb.com/videos/quick-looks/', 'sub': 'http://www.giantbomb.com/videos/premium/',
+                'feature': 'http://www.giantbomb.com/videos/features/', 'bombastica': 'http://www.giantbomb.com/videos/encyclopedia-bombastica/',
+                'event': 'http://www.giantbomb.com/videos/events/', 'unfinished': 'http://www.giantbomb.com/videos/unfinished/'}
+CHANNEL = "#giantbomb"
 
 def event_signedon(bot):
     global getvids_callLater, videos
@@ -54,8 +63,12 @@ def init(botref):
 
 def finalize():
     if getvids_callLater is not None:
-        log.info("Stopping previous scraping thread")
-        getvids_callLater.cancel()
+        try:
+            log.info("Stopping previous scraping thread")
+            getvids_callLater.cancel()
+        except Exception, e:
+            log.error("Exception occurred stopping scraping thread")
+            log.error(e)
 
 
 def command_gb(bot, user, channel, args):
@@ -66,16 +79,6 @@ def command_gb(bot, user, channel, args):
         subcommand = cmds[0]
         if subcommand == "ql":
             bot.say(channel, "Latest QL: %s" % videos['ql'])
-        elif subcommand == "feature":
-            bot.say(channel, "Latest Feature: %s" % videos['feature'])
-        elif subcommand == "sub":
-            bot.say(channel, "Latest Subscriber Content: %s" % videos['sub'])
-        elif subcommand == "article":
-            bot.say(channel, "Latest Article: %s" % videos['article'])
-        elif subcommand == "review":
-            bot.say(channel, "Latest Review: %s" % videos['review'])
-        elif subcommand == "bombastica":
-            bot.say(channel, "Latest Bombastica: %s" % videos['bombastica'])
         elif subcommand == "upcoming":
             page = bs4(urllib.urlopen("http://www.giantbomb.com/"))
             upcoming = page.find("dl", {"class": "promo-upcoming"})
@@ -90,45 +93,16 @@ def command_gb(bot, user, channel, args):
                     bot.say(channel, "%s - %s" % (text, time))
 
 
-def getvids(bot):
+def getvids(botref):
     """This function is launched from rotator to collect and announce new items from feeds to channel"""
-    global videos
+    global CHANNEL, videos, bot
 
+    bot = botref
     change = False
-    channel = "#giantbomb"
 
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/quick-looks/"))
-    name = page.find(class_ = "title")
-    latestname = name.string
-    if not latestname == videos['ql']:
-        latestdesc = page.find(itemprop = "description").string
-        link = name.parent['href']
-        bot.say(channel, "[New Quick Look] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Quick Look: %s" % latestname)
-        videos['ql'] = latestname
-        change = True
-
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/subscriber/"))
-    name = page.find(class_ = "title")
-    latestname = name.string
-    if not latestname == videos['sub']:
-        latestdesc = page.find(itemprop = "description").string
-        link = name.parent['href']
-        bot.say(channel, "[New Subscriber Video] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Sub Video: %s" % latestname)
-        videos['sub'] = latestname
-        change = True
-
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/features/"))
-    name = page.find(class_ = "title")
-    latestname = name.string
-    if not latestname == videos['feature']:
-        latestdesc = page.find(itemprop = "description").string
-        link = name.parent['href']
-        bot.say(channel, "[New Feature] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Feature: %s" % latestname)
-        videos['feature'] = latestname
-        change = True
+    for type, url in CODE_URLS.iteritems():
+        if check_latest(type, url):
+            change = True
 
     page = bs4(urllib.urlopen("http://www.giantbomb.com/news/"))
     latestname = page.find(class_ = "title").string
@@ -136,7 +110,7 @@ def getvids(bot):
         deck = page.find(class_ = "deck")
         latestdesc = deck.string
         link = deck.parent['href']
-        bot.say(channel, "[New Article] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
+        bot.say(CHANNEL, "[New Article] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
         log.info("New Article: %s" % latestname)
         videos['article'] = latestname
         change = True
@@ -153,54 +127,20 @@ def getvids(bot):
         scorespan = titletag.findNextSibling()
         scoreclass = scorespan['class'][2]
         score = scoreclass[scoreclass.find('-')+1:]
-        bot.say(channel, "[New %s-Star Review by %s] %s - %s http://www.giantbomb.com%s" % (score, author, latestname,
+        bot.say(CHANNEL, "[New %s-Star Review by %s] %s - %s http://www.giantbomb.com%s" % (score, author, latestname,
                                                                                          latestdesc, link))
         log.info("New Review: %s" % latestname)
         videos['review'] = latestname
-        change = True
-
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/encyclopedia-bombastica/"))
-    name = page.find(class_ = "title")
-    latestname = name.string
-    if not latestname == videos['bombastica']:
-        latestdesc = page.find(itemprop = "description").string
-        link = name.parent['href']
-        bot.say(channel, "[New Bombastica] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Bombastica: %s" % latestname)
-        videos['bombastica'] = latestname
-        change = True
-
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/events/"))
-    name = page.find(class_="title")
-    latestname = name.string
-    if not latestname == videos['event']:
-        latestdesc = page.find(itemprop="description").string
-        link = name.parent['href']
-        bot.say(channel, "[New Event Video] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Event Video: %s" % latestname)
-        videos['event'] = latestname
-        change = True
-
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/videos/unfinished/"))
-    name = page.find(class_="title")
-    latestname = name.string
-    if not latestname == videos['unfinished']:
-        latestdesc = page.find(itemprop="description").string
-        link = name.parent['href']
-        bot.say(channel, "[New Unfinished] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
-        log.info("New Unfinished: %s" % latestname)
-        videos['unfinished'] = latestname
         change = True
 
     livetwitter = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=giantbomblive&count=1"
     bearer = config.get('twitter_bearer')
     data = bot.get_url(livetwitter,headers={'Authorization':'Bearer ' + bearer})
     parsed = data.json()
-
     latesttweet = parsed[0]['id']
     if not latesttweet == videos['tweet']:
         text = parsed[0]['text']
-        bot.say(channel, "LIVE STREAM %s" % text[10:])
+        bot.say(CHANNEL, "LIVE STREAM %s" % text[10:])
         log.info("New Livestream Tweet")
         videos['tweet'] = latesttweet
         change = True
@@ -211,7 +151,7 @@ def getvids(bot):
     live = mdata['is_live']
     if live and not videos['mixlrlive']:
         latestmixlr = mdata['broadcasts'][0]['title']
-        bot.say(channel, "Jeff is LIVE on Mixlr: %s - %s" % (latestmixlr, url))
+        bot.say(CHANNEL, "Jeff is LIVE on Mixlr: %s - %s" % (latestmixlr, url))
         log.info("New Mixlr Broadcast")
         videos['mixlr'] = latestmixlr
         videos['mixlrlive'] = True
@@ -225,16 +165,40 @@ def getvids(bot):
     latestname = name.string
     if not latestname == videos['bombcast']:
         latestdesc = page.find(class_="deck").string.strip()
-        bot.say(channel, "[New Bombcast] %s - %s" % (latestname, latestdesc))
+        bot.say(CHANNEL, "[New Bombcast] %s - %s" % (latestname, latestdesc))
         log.info("New Bombcast: %s" % latestname)
         videos['bombcast'] = latestname
+        change = True
+
+    page = bs4(urllib.urlopen("http://www.giantbomb.com/podcasts/premium/"))
+    name = page.find("h2")
+    latestname = name.string
+    if not latestname == videos['premcast']:
+        latestdesc = page.find(class_="deck").string.strip()
+        bot.say(CHANNEL, "[New Premium Podcast] %s - %s" % (latestname, latestdesc))
+        log.info("New Premium Podcast: %s" % latestname)
+        videos['premcast'] = latestname
         change = True
 
     if change:
         with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json'),'w') as datafile:
             json.dump(videos, datafile)
-#     else:
-#         log.info("No changes found")
+
+def check_latest(type, url):
+    global CHANNEL, videos, bot
+
+    page = Soupy(urllib.urlopen(url))
+    namenode = page.find(class_ = "title")
+    latestname = namenode.text.val()
+    if not latestname == videos[type]:
+        latestdesc = page.find(itemprop = "description").text.val()
+        link = namenode.parent['href'].val()
+        bot.say(CHANNEL, "[New %s] %s - %s http://www.giantbomb.com%s" % (CODE_NAMES[type], latestname, latestdesc,
+                                                                          link))
+        log.info("New %s: %s" % (CODE_NAMES[type], latestname))
+        videos[type] = latestname
+        return True
+    return False
 
 
 def rotator_getvids(bot, delay):

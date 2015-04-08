@@ -59,7 +59,7 @@ def command_fullweather(bot, user, channel, args):
             parsed = get_weather(bot, nick, channel, defaults[nick], True)
         else:
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
-    elif args in defaultsLower:
+    elif args.lower() in defaultsLower:
         parsed = get_weather(bot, nick, channel, defaultsLower[args], True)
     else:
         parsed = get_weather(bot, nick, channel, args, True)
@@ -91,7 +91,7 @@ def command_forecast(bot, user, channel, args):
             parsed = get_weather(bot, nick, channel, defaults[nick], False)
         else:
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
-    elif args in defaultsLower:
+    elif args.lower() in defaultsLower:
         parsed = get_weather(bot, nick, channel, defaultsLower[args], False)
     else:
         parsed = get_weather(bot, nick, channel, args, False)
@@ -127,7 +127,7 @@ def command_records(bot, user, channel, args):
             parsed = get_weather(bot, nick, channel, defaults[nick], False)
         else:
             return bot.say(channel,"No location specified, and no default found! Use '.weather set [LOC]' to set a default.")
-    elif args in defaultsLower:
+    elif args.lower() in defaultsLower:
         parsed = get_weather(bot, nick, channel, defaultsLower[args], False)
     else:
         parsed = get_weather(bot, nick, channel, args, False)
@@ -159,7 +159,7 @@ def command_time(bot, user, channel, args):
             parsed = get_weather(bot, nick, channel, defaults[nick], False)
         else:
             return bot.say(channel,"No location specified! I hope you already know what time it is where you are.")
-    elif args in defaultsLower:
+    elif args.lower() in defaultsLower:
         parsed = get_weather(bot, nick, channel, defaultsLower[args], False)
     else:
         parsed = get_weather(bot, nick, channel, args, False)
