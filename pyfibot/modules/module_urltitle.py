@@ -94,8 +94,6 @@ def recurse(bot, user, title, channel):
     else:
         recursecount = 0
 
-    log.info("In here with " + title)
-    
     urls = pyfiurl.grab(title.encode("UTF-8"))
     if urls:
         log.info(urls)

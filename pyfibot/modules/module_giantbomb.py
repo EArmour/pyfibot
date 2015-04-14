@@ -127,7 +127,8 @@ def getvids(botref):
         scorespan = titletag.findNextSibling()
         scoreclass = scorespan['class'][2]
         score = scoreclass[scoreclass.find('-')+1:]
-        bot.say(CHANNEL, "[New %s-Star Review by %s] %s - %s http://www.giantbomb.com%s" % (score, author, latestname,
+        score = 'Unscored' if score == '0' else '%s-Star' % score
+        bot.say(CHANNEL, "[New %s Review by %s] %s - %s http://www.giantbomb.com%s" % (score, author, latestname,
                                                                                          latestdesc, link))
         log.info("New Review: %s" % latestname)
         videos['review'] = latestname
