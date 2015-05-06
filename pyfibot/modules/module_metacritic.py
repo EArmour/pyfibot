@@ -3,7 +3,6 @@
 import urllib2
 from bs4 import BeautifulSoup
 
-
 def command_score(bot, user, channel, args):
     game = args.replace(' ', '+')
 

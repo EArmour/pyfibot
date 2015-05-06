@@ -82,15 +82,14 @@ def command_gb(bot, user, channel, args):
         elif subcommand == "upcoming":
             page = bs4(urllib.urlopen("http://www.giantbomb.com/"))
             upcoming = page.find("dl", {"class": "promo-upcoming"})
-            slots = upcoming.find_all("dd")
-            if len(slots) == 0:
+            if not upcoming:
                 bot.say(channel, "No items on the upcoming list! Alert @GiantBombStats!")
-            else:
-                bot.say(channel, "%d Upcoming Items (times in EST):" % len(slots))
-                for slot in slots:
-                    text = slot.find("h4").text
-                    time = slot.find("p").text
-                    bot.say(channel, "%s - %s" % (text, time))
+            slots = upcoming.find_all("dd")
+            bot.say(channel, "%d Upcoming Items (times in EST):" % len(slots))
+            for slot in slots:
+                text = slot.find("h4").text
+                time = slot.find("p").text
+                bot.say(channel, "%s - %s" % (text, time))
 
 
 def getvids(botref):

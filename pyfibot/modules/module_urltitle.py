@@ -308,62 +308,44 @@ def _handle_youtube_gdata_new(url):
 
 def _handle_youtube_gdata(url):
     """http*://*youtube.com/watch?*v=*"""
-    # Fetches everything the api knows about the video
-    #gdata_url = "http://gdata.youtube.com/feeds/api/videos/%s"
-    # This fetches everything that is needed by the handle, using partial response.
-    gdata_url = "http://gdata.youtube.com/feeds/api/videos/%s"
+    api_key = config.get('google_apikey')
+
+    api_url = 'https://www.googleapis.com/youtube/v3/videos'
 
     match = re.match("https?://youtu.be/(.*)", url)
     if not match:
         match = re.match("https?://.*?youtube.com/watch\?.*?v=([^&]+)", url)
     if match:
-        infourl = gdata_url % match.group(1)
-        params = {'alt': 'json', 'v': '2'}
-        r = bot.get_url(infourl, params=params)
+        params = {'id': match.group(1),
+                  'part': 'snippet,contentDetails,statistics',
+                  'fields': 'items(id,snippet,contentDetails,statistics)',
+                  'key': api_key}
+
+        r = bot.get_url(api_url, params=params)
 
         if not r.status_code == 200:
-            log.info("Video too recent, no info through API yet.")
+            error = r.json().get('error')
+            if error:
+                error = '%s: %s' % (error['code'], error['message'])
+            else:
+                error = r.status_code
+
+            log.warning('YouTube API error: %s', error)
             return
 
-        entry = r.json()['entry']
+        items = r.json()['items']
+        if len(items) == 0: return
 
-        ## Author
-        author = entry['author'][0]['name']['$t']
-        ## Title
-        title = entry['title']['$t']
+        entry = items[0]
 
-        ## Content length
-        secs = int(entry['media$group']['yt$duration']['seconds'])
-        lengthstr = []
-        hours, minutes, seconds = secs // 3600, secs // 60 % 60, secs % 60
-        if hours > 0:
-            lengthstr.append("%dh" % hours)
-        if minutes > 0:
-            lengthstr.append("%dm" % minutes)
-        if seconds > 0:
-            lengthstr.append("%ds" % seconds)
+        channel = entry['snippet']['channelTitle']
 
-#         ## Content age
-#         published = entry['published']['$t']
-#         published = datetime.strptime(published, "%Y-%m-%dT%H:%M:%S.%fZ")
-#         age = datetime.now() - published
-#         halfyears, days = age.days // 182, age.days % 365
-#         agestr = []
-#         years = halfyears * 0.5
-#         if years >= 1:
-#             agestr.append("%gy" % years)
-#         # don't display days for videos older than 6 months
-#         if years < 1 and days > 0:
-#             agestr.append("%dd" % days)
-#         # complete the age string
-#         if agestr and days != 0:
-#             agestr.append(" ago")
-#         elif years == 0 and days == 0:  # uploaded TODAY, whoa.
-#             agestr.append("FRESH")
-#         else:
-#             agestr.append("ANANASAKÄÄMÄ")  # this should never happen =)
+        title = entry['snippet']['title']
 
-        return "YouTube: %s [by %s | %s]" % (title, author, "".join(lengthstr))
+        # The tag value is an ISO 8601 duration in the format PT#M#S
+        duration = entry['contentDetails']['duration'][2:].lower()
+
+        return "YouTube: %s [by %s | %s]" % (title, channel, duration)
 
 
 def _handle_steamgame(url):
