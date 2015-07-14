@@ -81,6 +81,7 @@ def __get_bs(url):
     else:
         return None
     
+	
 def recurse(bot, user, title, channel):
     #Kinda hacky method of preventing infinite loops (only the original url has a user attribute)
     #Mainly a problem with Twitter posts that have an image attached, since they essentially link to themselves
@@ -253,14 +254,19 @@ def _title(bot, channel, title, smart=False):
 def _handle_tweet2(url):
     """http*://twitter.com/*/status/*"""
     return _handle_tweet(url)
+	
+	
+def _handle_mobiletweet(url):
+	"""http*://mobile.twitter.com/*/status/*"""
+	return _handle_tweet(url)
 
-
+	
 def _handle_tweet(url):
     """http*://twitter.com/*/statuses/*"""
     tweet_url = "https://api.twitter.com/1.1/statuses/show.json?id=%s"
-    test = re.match("https?://twitter\.com\/(\w+)/status(es)?/(\d+)", url)
+    test = re.match("https?://(mobile.)?twitter\.com\/(\w+)/status(es)?/(\d+)", url)
     #    matches for unique tweet id string
-    infourl = tweet_url % test.group(3)
+    infourl = tweet_url % test.group(4)
 
     bearer = config.get('twitter_bearer')
     data = bot.get_url(infourl,headers={'Authorization':'Bearer ' + bearer})
@@ -280,6 +286,7 @@ def _handle_tweet(url):
     
     return tweet
 
+	
 def _handle_tco(url):
     """http://t.co/*"""
     api = "http://api.longurl.org/v2/expand?url=%s&format=json"
@@ -296,6 +303,7 @@ def _handle_tinyurl(url):
     """http://tinyurl.com/*"""
     return _handle_tco(url)
 
+	
 def _handle_youtube_shorturl(url):
     """http*://youtu.be/*"""
     return _handle_youtube_gdata(url)

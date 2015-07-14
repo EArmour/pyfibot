@@ -8,6 +8,7 @@ log = logging.getLogger('weather')
 defaults = {}
 defaultsLower = {}
 url = 'http://api.wunderground.com/api/%s/conditions/forecast/almanac/q/%s.json'
+degree_sign = u'\N{DEGREE SIGN}'
 
 def init(bot):
     global defaults, defaultsLower, api_key
@@ -26,6 +27,8 @@ def command_weather(bot, user, channel, args):
     nick = getnick.get(user)
     
     if not args:
+        if nick == "ashandarei":
+            return bot.say(channel,"ashandarei: I dunno, probably like a perfect 72" + degree_sign + "F, you jerk")
         if nick in defaults:
             return get_weather(bot, nick, channel, defaults[nick], True)
         else:
@@ -143,7 +146,6 @@ def command_records(bot, user, channel, args):
 
     temp = parsed['current_observation']['temp_f']
 
-    degree_sign = u'\N{DEGREE SIGN}'
     bot.say(channel, "Today at %s: Highest %s (%s), Lowest %s (%s) - Currently %s" % (airport, str(highTemp) +
                                                                                       degree_sign + 'F',
                                                                         highYear, str(lowTemp) + degree_sign + 'F',

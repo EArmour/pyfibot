@@ -20,11 +20,14 @@ getvids_callLater = None
 bot = None
 config = None
 
-CODE_NAMES = {'ql': 'Quick Look', 'sub': 'Premium Video', 'feature': 'Feature', 'bombastica': 'Encyclopedia Bombastica',
+VIDEO_NAMES = {'ql': 'Quick Look', 'sub': 'Premium Video', 'feature': 'Feature', 'bombastica': 'Encyclopedia Bombastica',
                 'event': 'Event Video', 'unfinished': 'Unfinished'}
-CODE_URLS = {'ql': 'http://www.giantbomb.com/videos/quick-looks/', 'sub': 'http://www.giantbomb.com/videos/premium/',
+VIDEO_URLS = {'ql': 'http://www.giantbomb.com/videos/quick-looks/', 'sub': 'http://www.giantbomb.com/videos/premium/',
                 'feature': 'http://www.giantbomb.com/videos/features/', 'bombastica': 'http://www.giantbomb.com/videos/encyclopedia-bombastica/',
                 'event': 'http://www.giantbomb.com/videos/events/', 'unfinished': 'http://www.giantbomb.com/videos/unfinished/'}
+PODCAST_NAMES = {'premcast': 'Premium Podcast', 'bombcast': 'Bombcast', 'beast': 'Beastcast', 'presents': 'GB Presents'}
+PODCAST_URLS = {'premcast': 'http://www.giantbomb.com/podcasts/premium/', 'bombcast':'http://www.giantbomb.com/podcasts/',
+                'beast': 'http://www.giantbomb.com/podcasts/beastcast/', 'presents': 'http://www.giantbomb.com/podcasts/giant-bomb-presents/'}
 CHANNEL = "#giantbomb"
 
 def event_signedon(bot):
@@ -99,8 +102,12 @@ def getvids(botref):
     bot = botref
     change = False
 
-    for type, url in CODE_URLS.iteritems():
+    for type, url in VIDEO_URLS.iteritems():
         if check_latest(type, url):
+            change = True
+
+    for type, url in PODCAST_URLS.iteritems():
+        if check_podcast(type, url):
             change = True
 
     page = bs4(urllib.urlopen("http://www.giantbomb.com/news/"))
@@ -160,26 +167,6 @@ def getvids(botref):
         videos['mixlrlive'] = False
         change=True
 
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/podcasts/"))
-    name = page.find("h2")
-    latestname = name.string
-    if not latestname == videos['bombcast']:
-        latestdesc = page.find(class_="deck").string.strip()
-        bot.say(CHANNEL, "[New Bombcast] %s - %s" % (latestname, latestdesc))
-        log.info("New Bombcast: %s" % latestname)
-        videos['bombcast'] = latestname
-        change = True
-
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/podcasts/premium/"))
-    name = page.find("h2")
-    latestname = name.string
-    if not latestname == videos['premcast']:
-        latestdesc = page.find(class_="deck").string.strip()
-        bot.say(CHANNEL, "[New Premium Podcast] %s - %s" % (latestname, latestdesc))
-        log.info("New Premium Podcast: %s" % latestname)
-        videos['premcast'] = latestname
-        change = True
-
     if change:
         with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json'),'w') as datafile:
             json.dump(videos, datafile)
@@ -193,13 +180,26 @@ def check_latest(type, url):
     if not latestname == videos[type]:
         latestdesc = page.find(itemprop = "description").text.val()
         link = namenode.parent['href'].val()
-        bot.say(CHANNEL, "[New %s] %s - %s http://www.giantbomb.com%s" % (CODE_NAMES[type], latestname, latestdesc,
+        bot.say(CHANNEL, "[New %s] %s - %s http://www.giantbomb.com%s" % (VIDEO_NAMES[type], latestname, latestdesc,
                                                                           link))
-        log.info("New %s: %s" % (CODE_NAMES[type], latestname))
+        log.info("New %s: %s" % (VIDEO_NAMES[type], latestname))
         videos[type] = latestname
         return True
     return False
 
+def check_podcast(type, url):
+    global CHANNEL, videos, bot
+
+    page = Soupy(urllib.urlopen(url))
+    namenode = page.find("h2")
+    latestname = namenode.text.val()
+    if not latestname == videos[type]:
+        latestdesc = page.find(class_="deck").text.val().strip()
+        bot.say(CHANNEL, "[New %s] %s - %s %s" % (PODCAST_NAMES[type], latestname, latestdesc, url))
+        log.info("New %s: %s" % (PODCAST_NAMES[type], latestname))
+        videos[type] = latestname
+        return True
+    return False
 
 def rotator_getvids(bot, delay):
     """Timer for methods/functions"""
