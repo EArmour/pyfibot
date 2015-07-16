@@ -22,13 +22,12 @@ config = None
 
 VIDEO_NAMES = {'ql': 'Quick Look', 'sub': 'Premium Video', 'feature': 'Feature', 'bombastica': 'Encyclopedia Bombastica',
                 'event': 'Event Video', 'unfinished': 'Unfinished'}
-VIDEO_URLS = {'ql': 'http://www.giantbomb.com/videos/quick-looks/', 'sub': 'http://www.giantbomb.com/videos/premium/',
-                'feature': 'http://www.giantbomb.com/videos/features/', 'bombastica': 'http://www.giantbomb.com/videos/encyclopedia-bombastica/',
-                'event': 'http://www.giantbomb.com/videos/events/', 'unfinished': 'http://www.giantbomb.com/videos/unfinished/'}
-PODCAST_NAMES = {'premcast': 'Premium Podcast', 'bombcast': 'Bombcast', 'beast': 'Beastcast', 'presents': 'GB Presents'}
-PODCAST_URLS = {'premcast': 'http://www.giantbomb.com/podcasts/premium/', 'bombcast':'http://www.giantbomb.com/podcasts/',
-                'beast': 'http://www.giantbomb.com/podcasts/beastcast/', 'presents': 'http://www.giantbomb.com/podcasts/giant-bomb-presents/'}
+VIDEO_CODES = {'ql': '3', 'sub': '10', 'feature': '8', 'bombastica': '12', 'event': '6', 'unfinished': '13'}
+VIDEO_URL = "http://www.giantbomb.com/api/videos/?api_key=%s&format=json&limit=1&video_type=%s&sort=publish_date:desc"
+PODCAST_NAMES = {'premcast': 'Premium Podcast', 'presents': 'GB Presents'}
+PODCAST_URLS = {'premcast': 'http://www.giantbomb.com/podcasts/premium/', 'presents': 'http://www.giantbomb.com/podcasts/giant-bomb-presents/'}
 CHANNEL = "#giantbomb"
+
 
 def event_signedon(bot):
     global getvids_callLater, videos
@@ -40,7 +39,7 @@ def event_signedon(bot):
     if getvids_callLater != None:
         log.info("Stopping previous scraping thread")
         getvids_callLater.cancel()
-    rotator_getvids(bot, 300)
+    rotator_getvids(bot, 600)
 
 def handle_privmsg(bot, user, channel, cmd):
     global videos
@@ -54,14 +53,16 @@ def handle_privmsg(bot, user, channel, cmd):
             if getvids_callLater != None:
                 log.info("Stopping previous scraping thread")
                 getvids_callLater.cancel()
-            rotator_getvids(bot, 300)
+            rotator_getvids(bot, 600)
 
 
 def init(botref):
-    global config
-    global bot
+    global config, bot, apikey, bearer
     bot = botref
-    config = bot.config.get("module_urltitle", {})
+    config = bot.config.get("module_giantbomb", {})
+    apikey = config.get("apikey")
+    twitconfig = bot.config.get("module_urltitle", {})
+    bearer = twitconfig.get('twitter_bearer')
 
 
 def finalize():
@@ -80,9 +81,7 @@ def command_gb(bot, user, channel, args):
     if args:
         cmds = args.split()
         subcommand = cmds[0]
-        if subcommand == "ql":
-            bot.say(channel, "Latest QL: %s" % videos['ql'])
-        elif subcommand == "upcoming":
+        if subcommand == "upcoming":
             page = bs4(urllib.urlopen("http://www.giantbomb.com/"))
             upcoming = page.find("dl", {"class": "promo-upcoming"})
             if not upcoming:
@@ -97,17 +96,13 @@ def command_gb(bot, user, channel, args):
 
 def getvids(botref):
     """This function is launched from rotator to collect and announce new items from feeds to channel"""
-    global CHANNEL, videos, bot
+    global CHANNEL, videos, bot, apikey, bearer
 
     bot = botref
     change = False
 
-    for type, url in VIDEO_URLS.iteritems():
-        if check_latest(type, url):
-            change = True
-
-    for type, url in PODCAST_URLS.iteritems():
-        if check_podcast(type, url):
+    for type, code in VIDEO_CODES.iteritems():
+        if check_latest(type, code):
             change = True
 
     page = bs4(urllib.urlopen("http://www.giantbomb.com/news/"))
@@ -121,27 +116,42 @@ def getvids(botref):
         videos['article'] = latestname
         change = True
 
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/reviews/"))
-    titletag = page.find(class_ = "title")
-    latestname = titletag.string
-    if not latestname == videos['review']:
-        deck = page.find(class_ = "deck")
-        byline = page.find(class_ = "byline").string
-        author = byline[byline.index("by") + 3:]
-        latestdesc = deck.string
-        link = deck.parent['href']
-        scorespan = titletag.findNextSibling()
-        scoreclass = scorespan['class'][2]
-        score = scoreclass[scoreclass.find('-')+1:]
+    data = requests.get("http://www.giantbomb.com/api/promos/?api_key=%s&format=json&limit=5&sort=date_added:desc" %
+                        apikey)
+    response = data.json()
+    promos = response['results']
+    for promo in promos:
+        podcastid = promo['id']
+        if podcastid == videos['podcast']:
+            break
+        elif promo['resource_type'] == 'podcast':
+            latestname = promo['name']
+            latestdesc = promo['deck']
+            url = promo['link']
+            bot.say(CHANNEL, "[New Podcast] %s - %s %s" % (latestname, latestdesc, url))
+            log.info("New Podcast: %s" % latestname)
+            videos['podcast'] = podcastid
+            change = True
+            break
+
+    data = requests.get("http://www.giantbomb.com/api/reviews/?api_key=%s&format=json&limit=1&sort=publish_date:desc" % apikey)
+    response = data.json()
+    review = response['results'][0]
+    releaseid = review['release']['id']
+    if not releaseid == videos['review']:
+        gamename = review['release']['name']
+        deck = review['deck']
+        author = review['reviewer']
+        link = review['site_detail_url']
+        score = review['score']
         score = 'Unscored' if score == '0' else '%s-Star' % score
-        bot.say(CHANNEL, "[New %s Review by %s] %s - %s http://www.giantbomb.com%s" % (score, author, latestname,
-                                                                                         latestdesc, link))
-        log.info("New Review: %s" % latestname)
-        videos['review'] = latestname
+        bot.say(CHANNEL, "[New %s Review by %s] %s - %s %s" % (score, author, gamename,
+                                                                                         deck, link))
+        log.info("New Review: %s" % gamename)
+        videos['review'] = releaseid
         change = True
 
     livetwitter = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=giantbomblive&count=1"
-    bearer = config.get('twitter_bearer')
     data = bot.get_url(livetwitter,headers={'Authorization':'Bearer ' + bearer})
     parsed = data.json()
     latesttweet = parsed[0]['id']
@@ -154,11 +164,11 @@ def getvids(botref):
 
     mixlr = requests.get("https://api.mixlr.com/users/jeff-gerstmann?source=embed&include_comments=false")
     mdata = mixlr.json()
-    url = mdata['url']
+    code = mdata['url']
     live = mdata['is_live']
     if live and not videos['mixlrlive']:
         latestmixlr = mdata['broadcasts'][0]['title']
-        bot.say(CHANNEL, "Jeff is LIVE on Mixlr: %s - %s" % (latestmixlr, url))
+        bot.say(CHANNEL, "Jeff is LIVE on Mixlr: %s - %s" % (latestmixlr, code))
         log.info("New Mixlr Broadcast")
         videos['mixlr'] = latestmixlr
         videos['mixlrlive'] = True
@@ -171,35 +181,46 @@ def getvids(botref):
         with open(os.path.join(sys.path[0], 'modules', 'module_giantbomb_conf.json'),'w') as datafile:
             json.dump(videos, datafile)
 
-def check_latest(type, url):
-    global CHANNEL, videos, bot
+def check_latest(type, code):
+    global videos, bot, apikey
 
-    page = Soupy(urllib.urlopen(url))
-    namenode = page.find(class_ = "title")
-    latestname = namenode.text.val()
-    if not latestname == videos[type]:
-        latestdesc = page.find(itemprop = "description").text.val()
-        link = namenode.parent['href'].val()
-        bot.say(CHANNEL, "[New %s] %s - %s http://www.giantbomb.com%s" % (VIDEO_NAMES[type], latestname, latestdesc,
-                                                                          link))
-        log.info("New %s: %s" % (VIDEO_NAMES[type], latestname))
-        videos[type] = latestname
-        return True
-    return False
+    try:
+        data = requests.get(VIDEO_URL % (apikey, code))
+        json = data.json()
+        video = json['results'][0]
+        vidid = video['id']
+        if not vidid == videos[type]:
+            name = video['name']
+            deck = video['deck']
+            link = video['site_detail_url']
+            bot.say(CHANNEL, "[New %s] %s - %s %s" % (VIDEO_NAMES[type], name, deck,
+                                                                              link))
+            log.info("New %s: %s" % (VIDEO_NAMES[type], name))
+            videos[type] = vidid
+            return True
+        return False
+    except:
+        log.error("Failed checking for latest %s at %s:" % (type, code))
+        return False
+
 
 def check_podcast(type, url):
-    global CHANNEL, videos, bot
+    global CHANNEL, videos, bot, apikey
 
     page = Soupy(urllib.urlopen(url))
-    namenode = page.find("h2")
-    latestname = namenode.text.val()
-    if not latestname == videos[type]:
-        latestdesc = page.find(class_="deck").text.val().strip()
-        bot.say(CHANNEL, "[New %s] %s - %s %s" % (PODCAST_NAMES[type], latestname, latestdesc, url))
-        log.info("New %s: %s" % (PODCAST_NAMES[type], latestname))
-        videos[type] = latestname
-        return True
-    return False
+    try:
+        namenode = page.find("h2")
+        latestname = namenode.text.val()
+        if not latestname == videos[type]:
+            latestdesc = page.find(class_="deck").text.val().strip()
+            bot.say(CHANNEL, "[New %s] %s - %s %s" % (PODCAST_NAMES[type], latestname, latestdesc, url))
+            log.info("New %s: %s" % (PODCAST_NAMES[type], latestname))
+            videos[type] = latestname
+            return True
+        return False
+    except:
+        log.error("Failed checking for latest %s at %s" % (type, url))
+        return False
 
 def rotator_getvids(bot, delay):
     """Timer for methods/functions"""
