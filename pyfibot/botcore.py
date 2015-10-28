@@ -440,15 +440,7 @@ class PyFiBot(irc.IRCClient, CoreCommands):
         if "!" and "@" in channel:
             channel = self.factory.getNick(channel)
 
-        # wrap long text into suitable fragments
-        msg = self.tw.wrap(message)
-        cont = False
-
-        for m in msg:
-            if cont:
-                m = "..." + m
-            self.msg(channel, m, length)
-            cont = True
+        self.msg(channel, message, length)
 
         return ('botcore.say', channel, message)
 

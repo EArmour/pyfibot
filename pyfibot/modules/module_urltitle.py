@@ -56,10 +56,10 @@ def init(botref):
     handlers = [(h, ref) for h, ref in globals().items() if h.startswith("_handle_")]
 
 
-def __get_bs(url):
+def __get_bs(url, headers = None):
     # Fetch the content and measure how long it took
     start = datetime.now()
-    r = bot.get_url(url)
+    r = bot.get_url(url, headers=headers)
     end = datetime.now()
 
     if not r:
@@ -320,9 +320,9 @@ def _handle_youtube_gdata(url):
 
     api_url = 'https://www.googleapis.com/youtube/v3/videos'
 
-    match = re.match("https?://youtu.be/(.*)", url)
+    match = re.match("https?://youtu.be/([^?&]+)", url)
     if not match:
-        match = re.match("https?://.*?youtube.com/watch\?.*?v=([^&]+)", url)
+        match = re.match("https?://.*?youtube.com/watch\?.*?v=([^?&]+)", url)
     if match:
         params = {'id': match.group(1),
                   'part': 'snippet,contentDetails,statistics',
@@ -358,7 +358,7 @@ def _handle_youtube_gdata(url):
 
 def _handle_steamgame(url):
     """http://store.steampowered.com/app/*"""
-    bs = __get_bs(url)
+    bs = __get_bs(url, headers={'Cookie':'birthtime=725875201'})
     
     title = bs.find(itemprop="name").text.strip()
 
@@ -893,3 +893,17 @@ def _handle_github(url):
 def _handle_gitio(url):
     """http*://git.io*"""
     return __get_title_tag(url)
+
+def _handle_vine(url):
+    """http*://vine.co/v/*"""
+    bs = __get_bs(url)
+    log.error(bs)
+    if not bs:
+        return False
+
+    desc = bs.find('meta', {'property': 'twitter:description'})
+    title = bs.find('meta', {'property': 'twitter:title'})
+    if not desc:
+        return False
+    else:
+        return "%s: %s" % (desc['content'], title['content'])

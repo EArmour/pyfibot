@@ -39,7 +39,7 @@ def event_signedon(bot):
     if getvids_callLater != None:
         log.info("Stopping previous scraping thread")
         getvids_callLater.cancel()
-    rotator_getvids(bot, 600)
+    rotator_getvids(bot, 500)
 
 def handle_privmsg(bot, user, channel, cmd):
     global videos
@@ -53,7 +53,7 @@ def handle_privmsg(bot, user, channel, cmd):
             if getvids_callLater != None:
                 log.info("Stopping previous scraping thread")
                 getvids_callLater.cancel()
-            rotator_getvids(bot, 600)
+            rotator_getvids(bot, 500)
 
 
 def init(botref):
@@ -105,13 +105,12 @@ def getvids(botref):
         if check_latest(type, code):
             change = True
 
-    page = bs4(urllib.urlopen("http://www.giantbomb.com/news/"))
-    latestname = page.find(class_ = "title").string
+    page = bs4(urllib.urlopen("http://www.giantbomb.com/feeds/news/"), "xml")
+    latestitem = page.rss.channel.item
+    latestname = latestitem.title.text
     if not latestname == videos['article']:
-        deck = page.find(class_ = "deck")
-        latestdesc = deck.string
-        link = deck.parent['href']
-        bot.say(CHANNEL, "[New Article] %s - %s http://www.giantbomb.com%s" % (latestname, latestdesc, link))
+        link = latestitem.link.text
+        bot.say(CHANNEL, "[New Article] %s - %s" % (latestname, link))
         log.info("New Article: %s" % latestname)
         videos['article'] = latestname
         change = True
