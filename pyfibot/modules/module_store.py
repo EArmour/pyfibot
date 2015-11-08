@@ -25,7 +25,7 @@ def command_store(bot, user, channel, args):
         data[newkey] = args[args.find(' ')+1:]
         bot.say(channel, "Data succesfully added for key: %s" % newkey)
         with open(os.path.join(sys.path[0], 'modules', 'module_store_conf.json'),'w') as datafile:
-            json.dump(data, datafile)
+            json.dump(data, datafile, indent=2)
 
 
 def command_get(bot, user, channel, args):
