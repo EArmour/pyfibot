@@ -357,7 +357,7 @@ def _handle_youtube_gdata(url):
 
 
 def _handle_steamgame(url):
-    """http://store.steampowered.com/app/*"""
+    """http*://store.steampowered.com/app/*"""
     bs = __get_bs(url, headers={'Cookie':'birthtime=725875201'})
     
     title = bs.find(itemprop="name").text.strip()
@@ -376,7 +376,7 @@ def _handle_steamgame(url):
 
 
 def _handle_steamsharedfile(url):
-    """http://steamcommunity.com/sharedfiles/filedetails/?id=*"""
+    """http*://steamcommunity.com/sharedfiles/filedetails/?id=*"""
     bs = __get_bs(url)
     
     crumbs = bs.find(class_="breadcrumbs")
@@ -404,11 +404,14 @@ def _handle_steamsharedfile(url):
     return "%s: %s" % (pagetype, descr)
 
 def _handle_steamscreenshot(url):
-    """http://steamcommunity.com/id/*/screenshot/*"""
+    """http*://steamcommunity.com/id/*/screenshot/*"""
     return _handle_steamsharedfile(url)
 
 def _handle_twitch(url):
-    """http://www.twitch.tv/*"""
+    """http*://www.twitch.tv/*"""
+    if "/videos/" in url:
+        return
+
     if "/popout" in url:
         url = url[:-7]
         
@@ -422,23 +425,6 @@ def _handle_twitch(url):
     game = json['game']
     
     return "Twitch: %s playing %s: %s" % (name, game, title)
-
-
-def _handle_alko(url):
-    """http://www.alko.fi/tuotteet/fi/*"""
-    bs = __get_bs(url)
-    if not bs:
-        return
-    name = bs.find('span', {'class': 'tuote_otsikko'}).string
-    price = bs.find('span', {'class': 'tuote_hinta'}).string.split(" ")[0] + u"€"
-    drinktype = bs.find('span', {'class': 'tuote_tyyppi'}).next
-    return name + " - " + drinktype + " - " + price
-
-
-def _handle_salakuunneltua(url):
-    """*salakuunneltua.fi*"""
-    return None
-
 
 def _handle_vimeo(url):
     """*vimeo.com/*"""
@@ -466,8 +452,6 @@ def _handle_vimeo(url):
 
         return "Vimeo: %s [by %s | %s]" % (title, user, "".join(lengthstr))
 
-
-
 def _handle_stackoverflow(url):
     """*stackoverflow.com/questions/*"""
     api_url = 'http://api.stackoverflow.com/1.1/questions/%s'
@@ -488,7 +472,6 @@ def _handle_stackoverflow(url):
     except Exception, e:
         log.debug("Json parsing failed %s" % e)
         return
-
 
 def _handle_imgur(url):
     """http*://*imgur.com*"""

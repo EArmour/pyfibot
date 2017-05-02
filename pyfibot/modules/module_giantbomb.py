@@ -19,15 +19,15 @@ videos = {}
 getvids_callLater = None
 bot = None
 config = None
+useragent = None
 
 VIDEO_NAMES = {'ql': 'Quick Look', 'sub': 'Premium Video', 'feature': 'Feature', 'bombastica': 'Encyclopedia Bombastica',
-                'event': 'Event Video', 'unfinished': 'Unfinished'}
-VIDEO_CODES = {'ql': '3', 'sub': '10', 'feature': '8', 'bombastica': '12', 'event': '6', 'unfinished': '13'}
-VIDEO_URL = "http://www.giantbomb.com/api/videos/?api_key=%s&format=json&limit=1&video_type=%s&sort=publish_date:desc"
+                'event': 'Event Video', 'unfinished': 'Unfinished', 'er': 'Endurance Run'}
+VIDEO_CODES = {'ql': '3', 'sub': '10', 'feature': '8', 'bombastica': '12', 'event': '6', 'unfinished': '13', 'er': '5'}
+VIDEO_URL = "http://www.giantbomb.com/api/videos/?api_key=%s&format=json&limit=1&filter=video_categories:%s" # &sort=publish_date:desc
 PODCAST_NAMES = {'premcast': 'Premium Podcast', 'presents': 'GB Presents'}
 PODCAST_URLS = {'premcast': 'http://www.giantbomb.com/podcasts/premium/', 'presents': 'http://www.giantbomb.com/podcasts/giant-bomb-presents/'}
 CHANNEL = "#giantbomb"
-
 
 def event_signedon(bot):
     global getvids_callLater, videos
@@ -57,13 +57,13 @@ def handle_privmsg(bot, user, channel, cmd):
 
 
 def init(botref):
-    global config, bot, apikey, bearer
+    global config, bot, apikey, bearer, useragent
     bot = botref
     config = bot.config.get("module_giantbomb", {})
     apikey = config.get("apikey")
     twitconfig = bot.config.get("module_urltitle", {})
     bearer = twitconfig.get('twitter_bearer')
-
+    useragent = bot.config.get("nick")
 
 def finalize():
     if getvids_callLater is not None:
@@ -96,7 +96,9 @@ def command_gb(bot, user, channel, args):
 
 def getvids(botref):
     """This function is launched from rotator to collect and announce new items from feeds to channel"""
-    global CHANNEL, videos, bot, apikey, bearer
+    global CHANNEL, videos, bot, apikey, bearer, useragent
+
+    req_headers = {'User-Agent': useragent}
 
     bot = botref
     change = False
@@ -116,7 +118,7 @@ def getvids(botref):
         change = True
 
     data = requests.get("http://www.giantbomb.com/api/promos/?api_key=%s&format=json&limit=5&sort=date_added:desc" %
-                        apikey)
+                        apikey, headers = req_headers)
     response = data.json()
     promos = response['results']
     for promo in promos:
@@ -133,7 +135,7 @@ def getvids(botref):
             change = True
             break
 
-    data = requests.get("http://www.giantbomb.com/api/reviews/?api_key=%s&format=json&limit=1&sort=publish_date:desc" % apikey)
+    data = requests.get("http://www.giantbomb.com/api/reviews/?api_key=%s&format=json&limit=1&sort=publish_date:desc" % apikey, headers = req_headers)
     response = data.json()
     review = response['results'][0]
     releaseid = review['release']['id']
@@ -181,10 +183,12 @@ def getvids(botref):
             json.dump(videos, datafile)
 
 def check_latest(type, code):
-    global videos, bot, apikey
+    global videos, bot, apikey, useragent
+
+    req_headers = {'User-Agent': useragent}
 
     try:
-        data = requests.get(VIDEO_URL % (apikey, code))
+        data = requests.get(VIDEO_URL % (apikey, code), headers = req_headers)
         json = data.json()
         video = json['results'][0]
         vidid = video['id']
@@ -199,7 +203,7 @@ def check_latest(type, code):
             return True
         return False
     except:
-        log.error("Failed checking for latest %s at %s:" % (type, code))
+        log.error("Failed checking for latest %s at %s" % (type, code))
         return False
 
 

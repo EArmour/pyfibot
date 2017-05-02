@@ -1,4 +1,5 @@
 import json, os, sys, logging
+from util import getnick
 
 log = logging.getLogger('store')
 data = {}
@@ -9,9 +10,14 @@ def init(bot):
     with open(os.path.join(sys.path[0], 'modules', 'module_store_conf.json')) as datafile:
         data = json.load(datafile)
 
+def command_put(bot, user, channel, args):
+    """.put [key] [value] - Store arbitrary text under a given key for later reference (key is one word)"""
+    command_store(bot, user, channel, args)
+
 def command_store(bot, user, channel, args):
     """.store [key] [value] - Store arbitrary text under a given key for later reference (key is one word)"""
     global data
+    nick = getnick.get(user)
 
     input = str(args).split()
     if len(input) < 2:

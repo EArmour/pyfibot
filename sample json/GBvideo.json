@@ -1,0 +1,42 @@
+{
+	"error": "OK",
+	"limit": 1,
+	"offset": 0,
+	"number_of_page_results": 1,
+	"number_of_total_results": 917,
+	"status_code": 1,
+	"results": [{
+		"api_detail_url": "https:\/\/www.giantbomb.com\/api\/video\/2300-12024\/",
+		"deck": "100 people drop by. There's only enough chicken dinner for one. What would you do?",
+		"hd_url": "https:\/\/giantbomb-pdl.akamaized.net\/2017\/05\/02\/mc_murderisland_05012017_2bcdek6t_4000.mp4",
+		"high_url": "https:\/\/giantbomb-pdl.akamaized.net\/2017\/05\/02\/mc_murderisland_05012017_2bcdek6t_3200.mp4",
+		"low_url": "https:\/\/giantbomb-pdl.akamaized.net\/2017\/05\/02\/mc_murderisland_05012017_2bcdek6t_1800.mp4",
+		"embed_player": "https:\/\/www.giantbomb.com\/videos\/embed\/12024\/",
+		"id": 12024,
+		"length_seconds": 8366,
+		"name": "Murder Island (05\/01\/2017)",
+		"publish_date": "2017-05-01 18:11:00",
+		"site_detail_url": "https:\/\/www.giantbomb.com\/videos\/murder-island-05012017\/2300-12024\/",
+		"url": "mc_murderisland_05012017_2bcdek6t.mp4",
+		"image": {
+			"icon_url": "https:\/\/www.giantbomb.com\/api\/image\/square_avatar\/2935572-murderisland050117.jpg",
+			"medium_url": "https:\/\/www.giantbomb.com\/api\/image\/scale_medium\/2935572-murderisland050117.jpg",
+			"screen_url": "https:\/\/www.giantbomb.com\/api\/image\/screen_medium\/2935572-murderisland050117.jpg",
+			"small_url": "https:\/\/www.giantbomb.com\/api\/image\/scale_small\/2935572-murderisland050117.jpg",
+			"super_url": "https:\/\/www.giantbomb.com\/api\/image\/scale_large\/2935572-murderisland050117.jpg",
+			"thumb_url": "https:\/\/www.giantbomb.com\/api\/image\/scale_avatar\/2935572-murderisland050117.jpg",
+			"tiny_url": "https:\/\/www.giantbomb.com\/api\/image\/square_mini\/2935572-murderisland050117.jpg"
+		},
+		"user": "unastrike",
+		"video_type": "Premium",
+		"video_show": null,
+		"video_categories": [{
+			"api_detail_url": "https:\/\/www.giantbomb.com\/api\/video_category\/2320-10\/",
+			"id": 10,
+			"name": "Premium",
+			"site_detail_url": "https:\/\/www.giantbomb.com\/videos\/premium\/"
+		}],
+		"youtube_id": null
+	}],
+	"version": "1.0"
+}

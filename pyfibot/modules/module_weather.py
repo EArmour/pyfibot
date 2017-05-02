@@ -21,8 +21,7 @@ def init(bot):
         defaultsLower = {key.lower():value for key,value in defaults.items()}
 
 def command_weather(bot, user, channel, args):
-    """.weather [set] (location) - Gets weather from Weather Underground (Can store per-user defaults). Also
-    .fullweather, .forecast, .records"""
+    """.weather [set] (location) - Gets weather from Weather Underground (Can store per-user defaults). Also .fullweather, .forecast, .records"""
     global defaults, defaultsLower
     nick = getnick.get(user)
     
@@ -102,11 +101,11 @@ def command_forecast(bot, user, channel, args):
     time = parsed['current_observation']['local_time_rfc822']
     hour = int(time[17:19])
 
-    if hour > 20: #After 8pm, start with tomorrow day
+    if hour > 20: # After 8pm, start with tomorrow day
         start = 2
-    elif hour > 14: #After 2pm, until 8pm, show tonight and tomorrow day
+    elif hour > 14: # After 2pm, until 8pm, show tonight and tomorrow day
         start = 1
-    else: #Before 2pm, show today and tonight
+    else: # Before 2pm, show today and tonight
         start = 0
     
     forecast = parsed['forecast']['txt_forecast']['forecastday']
@@ -196,9 +195,9 @@ def command_weatherbattle(bot, user, channel, args):
     temp1 = json1['current_observation']['temp_f']
     temp2 = json2['current_observation']['temp_f']
     
-    if temp1 < temp2:
+    if temp1 > temp2:
         return bot.say(channel, "%s wins with %s to %s's %s!" % (splut[0], str(temp1) + degree_sign + 'F', splut[1], str(temp2) + degree_sign + 'F'))
-    elif temp2 < temp1:
+    elif temp2 > temp1:
         return bot.say(channel, "%s wins with %s to %s's %s!" % (splut[1], str(temp2) + degree_sign + 'F', splut[0], str(temp1) + degree_sign + 'F'))
     else:
         return bot.say(channel, "It's a tie at %s!? I think someone is cheating the system!" % (str(temp1) + degree_sign + 'F'))
@@ -209,7 +208,7 @@ def get_weather(bot, nick, channel, args, output):
     location = args
     q = bot.get_url(url % (api_key, location))
     parsed = q.json()
-    degree_sign = u'\N{DEGREE SIGN}'
+
     
     try:
         result = parsed['response']['results'][0]
@@ -232,13 +231,19 @@ def get_weather(bot, nick, channel, args, output):
         location = info['observation_location']['full']
         temp = info['temp_f']
         tempc = info['temp_c']
+        feels = info['feelslike_f']
+        feelsc = info['feelslike_c']
         condition = info['weather']
         humidity = info['relative_humidity']
         
         if output:
-            bot.say(channel, nick + ': [' + location + '] Temp: ' + str(temp) + degree_sign + 'F, ' + str(tempc) + degree_sign + 'C | Currently ' + condition + ' | Humidity of ' + humidity)
+            bot.say(channel, nick + ': [' + location + '] ' + fmt_temp(temp, tempc) + ' (Feels Like ' + fmt_temp(feels, feelsc) + ') | Currently ' + condition + ' | Humidity of ' + humidity)
         return parsed
     except KeyError:
         error = parsed['response']['error']['description']
         bot.say(channel, "ERROR: %s [for query '%s']" % (error, location))
         pass
+
+def fmt_temp(f, c):
+    degree_sign = u'\N{DEGREE SIGN}'
+    return str(f) + degree_sign + 'F, ' + str(c) + degree_sign + 'C'
