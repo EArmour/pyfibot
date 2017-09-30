@@ -23,8 +23,8 @@ useragent = None
 
 VIDEO_NAMES = {'ql': 'Quick Look', 'sub': 'Premium Video', 'feature': 'Feature', 'bombastica': 'Encyclopedia Bombastica',
                 'event': 'Event Video', 'unfinished': 'Unfinished', 'er': 'Endurance Run'}
-VIDEO_CODES = {'ql': '3', 'sub': '10', 'feature': '8', 'bombastica': '12', 'event': '6', 'unfinished': '13', 'er': '5'}
-VIDEO_URL = "http://www.giantbomb.com/api/videos/?api_key=%s&format=json&limit=1&filter=video_categories:%s" # &sort=publish_date:desc
+VIDEO_CODES = {'ql': '3', 'sub': '10', 'feature': '8', 'bombastica': '12', 'event': '6', 'er': '5', 'unfinished': '13'}
+VIDEO_URL = "http://www.giantbomb.com/api/videos/?api_key=%s&format=json&limit=1&filter=video_categories:%s"
 PODCAST_NAMES = {'premcast': 'Premium Podcast', 'presents': 'GB Presents'}
 PODCAST_URLS = {'premcast': 'http://www.giantbomb.com/podcasts/premium/', 'presents': 'http://www.giantbomb.com/podcasts/giant-bomb-presents/'}
 CHANNEL = "#giantbomb"
@@ -192,14 +192,18 @@ def check_latest(type, code):
         json = data.json()
         video = json['results'][0]
         vidid = video['id']
-        if not vidid == videos[type]:
+        if not vidid in videos[type]:
             name = video['name']
             deck = video['deck']
             link = video['site_detail_url']
             bot.say(CHANNEL, "[New %s] %s - %s %s" % (VIDEO_NAMES[type], name, deck,
                                                                               link))
             log.info("New %s: %s" % (VIDEO_NAMES[type], name))
-            videos[type] = vidid
+            videos[type].append(vidid)
+
+            # Only need to keep the latest 5 ids
+            if len(videos[type]) > 5:
+                videos[type].pop(0)
             return True
         return False
     except:
